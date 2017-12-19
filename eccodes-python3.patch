@@ -1,0 +1,402 @@
+Author: Alastair McKinstry <mckinstry@debian.org>
+Description: Support for Python3
+Forwarded: no
+Last-Updated: 2016-12-05
+
+Index: python/test_iterator.py
+===================================================================
+--- python/test_iterator.py
++++ python/test_iterator.py
+@@ -1,7 +1,8 @@
+ #!/usr/bin/env python
+ 
++from __future__ import print_function
+ import sys
+-from gribapi import *
++from .gribapi import *
+ import profile
+ 
+ def main():
+@@ -26,12 +27,12 @@ def main():
+             sys.stdout.write("- %d - lat=%.6f lon=%.6f value=" % (i,lat,lon))
+ 
+             if value == missingValue:
+-                print "missing"
++                print("missing")
+             else:
+-                print "%.6f" % value
++                print("%.6f" % value)
+ 
+             i += 1
+-            
++
+         grib_iterator_delete(iterid)
+         grib_release(gid)
+ 
+Index: python/test_index.py
+===================================================================
+--- python/test_index.py
++++ python/test_index.py
+@@ -1,7 +1,8 @@
+ #!/usr/bin/env python
+ 
++from __future__ import print_function
+ import sys
+-from gribapi import *
++from .gribapi import *
+ from array import array
+ import random
+ import traceback
+@@ -17,7 +18,7 @@ class Usage(Exception):
+ def product(*args, **kwds):
+     # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
+     # product(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
+-    pools = map(tuple, args) * kwds.get('repeat', 1)
++    pools = list(map(tuple, args)) * kwds.get('repeat', 1)
+     result = [[]]
+     for pool in pools:
+         result = [x+[y] for x in result for y in pool]
+@@ -34,20 +35,20 @@ def test():
+     infile = sys.argv[1]
+     index_keys = ["shortName","level","number","step"]
+ 
+-    print "indexing..."
++    print ("indexing...")
+     iid = grib_index_new_from_file(infile,index_keys)
+-    print "end indexing..."
++    print ("end indexing...")
+ 
+     index_vals = []
+ 
+     for key in index_keys:
+-        print "%sSize=%d" % (
++        print ("%sSize=%d" % (
+             key,
+             grib_index_get_size(iid,key)
+-        )
++        ))
+ 
+         key_vals = grib_index_get_string(iid,key)
+-        print " ".join(key_vals)
++        print (" ".join(key_vals))
+ 
+         index_vals.append(key_vals)
+ 
+@@ -58,7 +59,7 @@ def test():
+         while 1:
+             gid = grib_new_from_index(iid)
+             if gid is None: break
+-            print " ".join(["%s=%s" % (key,grib_get_string(gid,key)) for key in index_keys])
++            print (" ".join(["%s=%s" % (key,grib_get_string(gid,key)) for key in index_keys]))
+             grib_release(gid)
+ 
+     grib_index_release(iid)
+@@ -67,17 +68,17 @@ def test():
+ def main():
+     try:
+         test()
+-    except GribInternalError,err:
++    except GribInternalError as err:
+         if VERBOSE:
+             traceback.print_exc(file=sys.stderr)
+         else:
+-            print >>sys.stderr,err.msg
++            print (err.msg, file=sys.stderr)
+ 
+         return 1
+     except Usage:
+-        print "Usage: %s infile" % sys.argv[0]
++        print ("Usage: %s infile" % sys.argv[0])
+         sys.exit(2)
+ 
+ if __name__ == "__main__":
+     main()
+-    #print "------------------------------------"
++    #print ("------------------------------------")
+Index: python/test_keysiterator.py
+===================================================================
+--- python/test_keysiterator.py
++++ python/test_keysiterator.py
+@@ -1,7 +1,8 @@
+ #!/usr/bin/env python
+ 
++from __future__ import print_function
+ import sys
+-from gribapi import *
++from .gribapi import *
+ 
+ infile = sys.argv[1]
+ fid = open(infile,"r")
+@@ -22,11 +23,9 @@ for i in range(count):
+         keyname = grib_keys_iterator_get_name(iterid)
+         keyval = grib_get_string(iterid,keyname)
+         keytype = grib_get_native_type(gid,keyname)
+-        print "%s = %s (%s)" % (keyname,keyval,str(keytype))
++        print ("%s = %s (%s)" % (keyname,keyval,str(keytype)))
+ 
+     grib_keys_iterator_delete(iterid)
+     grib_release(gid)
+ 
+ fid.close()
+-
+-
+Index: python/test_general.py
+===================================================================
+--- python/test_general.py
++++ python/test_general.py
+@@ -1,7 +1,8 @@
+ #!/usr/bin/env python
+ 
++from __future__ import print_function
+ import sys
+-from gribapi import *
++from .gribapi import *
+ import random
+ import traceback
+ 
+@@ -44,25 +45,25 @@ def test():
+     #grib_write_file(binstr_fid,x)
+     #grib_close_file(binstr_fid)
+ 
+-    print "Operating on file '%s'" % infile
++    print ("Operating on file '%s'" % infile)
+ 
+     n = grib_count_in_file(fid)
+-    print "Message count ",n
++    print ("Message count ",n)
+ 
+     # multi support test
+     grib_multi_support_on()
+     ismulti = "no" if (n == grib_count_in_file(fid)) else "yes"
+-    print "Is multi field - %s" % ismulti
++    print ("Is multi field - %s" % ismulti)
+     grib_multi_support_off()
+     # end multi support test
+ 
+     # gribex support test on/off
+-    print "Gribex support on/off"
++    print ("Gribex support on/off")
+     grib_gribex_mode_on()
+     grib_gribex_mode_off
+     # end gribex support test
+ 
+-    print "Browsing through messages "
++    print ("Browsing through messages ")
+     for i in range(n):
+         gid = grib_new_from_file(fid)
+ 
+@@ -70,71 +71,71 @@ def test():
+         #grib_print(gid,"centre")
+ 
+         if i == 0:
+-            print "Message size: ",grib_get_message_size(gid)
++            print ("Message size: ",grib_get_message_size(gid))
+             nval = grib_get_size(gid,"values")
+-            print "Number of values in message %d is %d" % (i,nval)
++            print ("Number of values in message %d is %d" % (i,nval))
+ 
+-            print "== %s %s %s %d ==" % \
++            print ("== %s %s %s %d ==" % \
+                 ( \
+                 grib_get_string(gid,"shortName"), \
+                 grib_get_string(gid,"name"), \
+                 grib_get_string(gid,"typeOfLevel"), \
+                 grib_get_long(gid,"level"), \
+-                )
++                ))
+ 
+-            print "Nearest point to 10,10: "
+-            print grib_find_nearest(gid,10,10)
++            print ("Nearest point to 10,10: ")
++            print (grib_find_nearest(gid,10,10))
+ 
+-            print grib_find_nearest(gid,10,10,npoints=4)
++            print (grib_find_nearest(gid,10,10,npoints=4))
+ 
+             rand_list = []
+             for i in range(0,5):
+                 rand_index = random.randint(1,nval)
+                 rand_list.append(rand_index)
+                 myval = grib_get_double_element(gid,"values",rand_index)
+-                print "Random index value[%d] = %.8f" % (rand_index,myval)
++                print ("Random index value[%d] = %.8f" % (rand_index,myval))
+ 
+             all4rand = grib_get_double_elements(gid,"values",rand_list)
+-            print "All at once index values: ",all4rand
++            print ("All at once index values: ",all4rand)
+ 
+             centre = grib_get_string(gid,"centre")
+             grib_set_string(gid,"centre","ecmf")
+             new_centre = grib_get_string(gid,"centre")
+-            print "Before/after string centre: %s/%s" % (centre,new_centre)
++            print ("Before/after string centre: %s/%s" % (centre,new_centre))
+ 
+             centre = grib_get_long(gid,"centre")
+             grib_set_long(gid,"centre",99)
+             new_centre = grib_get_long(gid,"centre")
+-            print "Before/after numeric centre: %d/%d" % (centre,new_centre)
++            print ("Before/after numeric centre: %d/%d" % (centre,new_centre))
+ 
+             centre = grib_get_double(gid,"centre")
+             grib_set_double(gid,"centre",9)
+             new_centre = grib_get_double(gid,"centre")
+-            print "Before/after numeric floating point centre: %f/%f" % (centre,new_centre)
++            print ("Before/after numeric floating point centre: %f/%f" % (centre,new_centre))
+ 
+             vals = grib_get_double_array(gid,"values")
+-            print "Values before: ",vals[:10]
++            print ("Values before: ",vals[:10])
+             grib_set_double_array(gid,"values",(1.0, 2.0, 3.14))
+             vals = grib_get_double_array(gid,"values")
+-            print "Values after: ",vals[:10]
++            print ("Values after: ",vals[:10])
+ 
+-            print "Saving modified message to %s" % outfile
++            print ("Saving modified message to %s" % outfile)
+             if WRITE: grib_write(gid,out)
+ 
+-            print "Creating and saving a clone to %s" % clonefile
++            print ("Creating and saving a clone to %s" % clonefile)
+             clone_gid = grib_clone(gid)
+             if WRITE: grib_write(clone_gid,clone_fid)
+             grib_release(clone_gid)
+ 
+             Ni = grib_get(gid,"Ni")
+-            print "Setting Ni to missing from --> ",Ni
++            print ("Setting Ni to missing from --> ",Ni)
+             grib_set_missing(gid,"Ni")
+             assert grib_is_missing(gid,"Ni")
+             miss_Ni = grib_get(gid,"Ni")
+-            print "Ni is now --> ",miss_Ni
++            print ("Ni is now --> ",miss_Ni)
+             grib_set(gid,"Ni",Ni)
+             new_Ni = grib_get(gid,"Ni")
+-            print "Set Ni back to its original value --> ",new_Ni
++            print ("Set Ni back to its original value --> ",new_Ni)
+             assert Ni == new_Ni
+ 
+             #grib_multi_write(gid,multi)
+@@ -145,23 +146,23 @@ def test():
+     fid.close()
+     out.close()
+     clone_fid.close()
+-    print "Closed file"
++    print ("Closed file")
+ 
+ 
+ def main():
+     try:
+         test()
+-    except GribInternalError,err:
++    except GribInternalError as err:
+         if VERBOSE:
+             traceback.print_exc(file=sys.stderr)
+         else:
+-            print >>sys.stderr,err.msg
++            print (err.msg, file=sys.stderr)
+ 
+         return 1
+     except Usage:
+-        print "Usage: %s infile" % sys.argv[0]
++        print ("Usage: %s infile" % sys.argv[0])
+         sys.exit(2)
+ 
+ if __name__ == "__main__":
+     main()
+-    print "------------------------------------"
++    print ("------------------------------------")
+Index: python/test_extra.py
+===================================================================
+--- python/test_extra.py
++++ python/test_extra.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python
+ 
+-from gribapi import *
++from __future__ import print_function
++from .gribapi import *
+ import sys
+ 
+ input=sys.argv[1]
+@@ -12,31 +13,31 @@ while 1:
+     gid = grib_new_from_file(fid)
+     if gid is None: break
+ 
+-    print grib_get(gid,"centre")
+-    print grib_get(gid,"centre",int)
+-    print grib_get(gid,"centre",float)
+-    print grib_get(gid,"centre",str)
++    print (grib_get(gid,"centre"))
++    print (grib_get(gid,"centre",int))
++    print (grib_get(gid,"centre",float))
++    print (grib_get(gid,"centre",str))
+ 
+-    print "Nvalues = ",grib_get_size(gid,"values")
++    print ("Nvalues = ",grib_get_size(gid,"values"))
+ 
+     values = grib_get_array(gid,"values")
+-    print values[:10]
++    print (values[:10])
+     values = values * 2
+ 
+     grib_set_double_array(gid,"values",values)
+ 
+     values = grib_get_array(gid,"values")
+-    print values[:10]
++    print (values[:10])
+     values = values / 2
+ 
+     grib_set_double_array(gid,"values",[1])
+ 
+     values = grib_get_values(gid)
+-    print values[:10]
++    print (values[:10])
+ 
+-    print grib_get(gid,"bitsPerValue")
++    print (grib_get(gid,"bitsPerValue"))
+     grib_set(gid,"bitsPerValue",10)
+-    print grib_get(gid,"bitsPerValue")
++    print (grib_get(gid,"bitsPerValue"))
+ 
+     grib_write(gid,oid)
+ 
+Index: examples/python/binary_message.py
+===================================================================
+--- examples/python/binary_message.py
++++ examples/python/binary_message.py
+@@ -9,6 +9,7 @@
+ # nor does it submit to any jurisdiction.
+ #
+ 
++from __future__ import print_function
+ import traceback
+ import sys
+ 
+Index: python/gribapi/gribapi.py
+===================================================================
+--- python/gribapi/gribapi.py
++++ python/gribapi/gribapi.py
+@@ -23,7 +23,7 @@ When this is enabed, then the system Pyt
+ 
+ """
+ import gribapi_swig as _internal
+-# from gribapi import gribapi_swig as _internal
++from gribapi import gribapi_swig as _internal
+ import types
+ import sys
+ import os
+@@ -32,6 +32,14 @@ from functools import wraps
+ from . import errors
+ from errors import *  # noqa
+ 
++try:
++    type(file)
++except NameError:
++    # python3
++    import io
++    file=io.IOBase
++    long=int
++
+ KEYTYPES = {
+     1: int,
+     2: float,

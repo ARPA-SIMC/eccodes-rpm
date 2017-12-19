@@ -1,0 +1,118 @@
+Index: python/CMakeLists.txt
+===================================================================
+--- python/CMakeLists.txt
++++ python/CMakeLists.txt
+@@ -1,9 +1,9 @@
+ if( HAVE_PYTHON )
+ 
+-    #find_package( SWIG )
+-    #if( SWIG_FOUND )
+-    #    include( ${SWIG_USE_FILE} )
+-    #endif()
++    find_package( SWIG )
++    if( SWIG_FOUND )
++        include( ${SWIG_USE_FILE} )
++    endif()
+ 
+     # preparing for generating setup.py
+     if( HAVE_LIBJASPER )
+Index: python/gribapi_swig.i
+===================================================================
+--- python/gribapi_swig.i
++++ python/gribapi_swig.i
+@@ -17,14 +17,17 @@
+ import_array();
+ %}
+ 
+-/* Converts a PyFile instance to a stdio FILE* */
++
++ /* FIXME: Can we make this ro/rw ? */
+ %typemap(in) FILE* {
+-    if ( PyFile_Check($input) ){
+-        $1 = PyFile_AsFile($input);
+-    } else {
+-        PyErr_SetString(PyExc_TypeError, "$1_name must be a file type.");
+-        return NULL;
+-    }
++  int fd;
++  fd = PyObject_AsFileDescriptor($input);
++  if ( fd >= 0 ) {
++    $1 = fopen(fd, "r+"); 
++  } else {
++    PyErr_SetString(PyExc_TypeError, "$1_name must be a file type.");
++    return NULL;
++  }
+ }
+ 
+ %pointer_class(int, intp);
+@@ -67,6 +70,7 @@ int grib_c_count_in_file(FILE* f,int* OU
+ // grib handle operations
+ int grib_c_release(int* gid);
+ int grib_c_write(int* gid, FILE* f);
++
+ int grib_c_get_size_long(int* gid, char* key, long* OUTPUT);
+ int grib_c_get_string_length(int* gid, char* key, size_t* OUTPUT);
+ int grib_c_clone(int* gid,int* INOUT);
+@@ -77,9 +81,9 @@ int grib_c_get_native_type(int* gid, cha
+ // ---
+ 
+ // multi support
++int grib_c_multi_write(int* gid, FILE* f);
+ int grib_c_multi_new(int* OUTPUT);
+ int grib_c_multi_support_on(void);
+-int grib_c_multi_write(int* gid, FILE* f);
+ int grib_c_multi_support_off(void);
+ int grib_c_multi_release(int* gid);
+ int grib_c_multi_append(int* INPUT, int* INPUT,int* INPUT);
+Index: python/eccodes/high_level/codesfile.py
+===================================================================
+--- python/eccodes/high_level/codesfile.py
++++ python/eccodes/high_level/codesfile.py
+@@ -6,9 +6,9 @@ Author: Daniel Lee, DWD, 2016
+ """
+ 
+ from .. import eccodes
++from io import IOBase
+ 
+-
+-class CodesFile(file):
++class CodesFile(IOBase):
+ 
+     """
+     An abstract class to specify and/or implement common behaviour that files
+Index: python/gribapi/gribapi.py
+===================================================================
+--- python/gribapi/gribapi.py
++++ python/gribapi/gribapi.py
+@@ -22,15 +22,15 @@ When this is enabed, then the system Pyt
+     - NumPy
+ 
+ """
+-import gribapi_swig as _internal
+-from gribapi import gribapi_swig as _internal
++# import gribapi_swig as _internal
++from . import gribapi_swig as _internal
+ import types
+ import sys
+ import os
+ from functools import wraps
+ # import inspect
+ from . import errors
+-from errors import *  # noqa
++from .errors import *  # noqa
+ 
+ try:
+     type(file)
+Index: python/gribapi/errors.py
+===================================================================
+--- python/gribapi/errors.py
++++ python/gribapi/errors.py
+@@ -2,7 +2,7 @@
+ Exception class hierarchy
+ """
+ 
+-import gribapi_swig as _internal
++from . import gribapi_swig as _internal
+ 
+ 
+ class GribInternalError(Exception):

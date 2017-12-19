@@ -1,0 +1,164 @@
+Name:           eccodes
+Version:        2.5.0
+Release:        2%{dist}
+Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
+URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
+Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/%{name}-%{version}-Source.tar.gz?api=v2#/%{name}-%{version}-Source.tar.gz
+Patch0:         eccodes-python3.patch
+Patch1:         eccodes-py3-fixes.patch
+License:        Apache License, Version 2.0
+
+BuildRequires:  gcc-c++
+BuildRequires:  gcc-gfortran
+BuildRequires:  cmake
+BuildRequires:  flex
+BuildRequires:  bison
+BuildRequires:  python3-devel
+BuildRequires:  swig
+BuildRequires:  libjpeg-turbo-devel
+BuildRequires:  libpng-devel
+BuildRequires:  libaec-devel
+BuildRequires:  jasper-devel
+BuildRequires:  openjpeg2-devel
+BuildRequires:  hdf5-devel
+
+Provides:       grib_api = 1.23.0
+Obsoletes:      grib_api < 1.23.0
+
+
+%description
+ecCodes is a package developed by ECMWF which provides an application programming interface and a set of tools for decoding and encoding messages in the following formats:
+
+WMO FM-92 GRIB edition 1 and edition 2
+WMO FM-94 BUFR edition 3 and edition 4 
+WMO GTS abbreviated header (only decoding).
+
+A useful set of command line tools provide quick access to the messages. C, Fortran 90 and Python interfaces provide access to the main ecCodes functionality.
+
+ecCodes is an evolution of GRIB-API.  It is designed to provide the user with a simple set of functions to access data from several formats with a key/value approach.
+
+For GRIB encoding and decoding, the GRIB-API functionality is provided fully in ecCodes with only minor interface and behaviour changes. Interfaces for C, Fortran 90 and Python are all maintained as in GRIB-API.  However, the GRIB-API Fortran 77 interface is no longer available.
+
+In addition, a new set of functions with the prefix "codes_" is provided to operate on all the supported message formats. These functions have the same interface and behaviour as the "grib_" functions. 
+
+A selection of GRIB-API tools has been included in ecCodes (ecCodes GRIB tools), while new tools are available for the BUFR (ecCodes BUFR tools) and GTS formats. The new tools have been developed to be as similar as possible to the existing GRIB-API tools maintaining, where possible, the same options and behaviour. A significant difference compared with GRIB-API tools is that bufr_dump produces output in JSON format suitable for many web based applications.
+
+%package doc
+Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
+
+%description doc
+Documentation for eccodes.
+
+%package devel
+Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       libaec-devel
+Requires:       libpng-devel
+Requires:       libjpeg-turbo-devel
+
+Provides:       grib_api-devel = 1.23.0
+Obsoletes:      grib_api-devel < 1.23.0
+
+%description devel
+Header files and libraries for eccodes.
+
+%package -n python3-%{name}
+Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description -n python3-%{name}
+Python3 bindings for eccodes.
+
+%prep
+%setup -q -n %{name}-%{version}-Source
+%patch0
+%patch1
+
+%build
+mkdir build
+cd build
+
+%cmake .. \
+    -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+    -DINSTALL_LIB_DIR=%{_lib} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
+    -DENABLE_INSTALL_ECCODES_SAMPLES=ON \
+    -DENABLE_PNG=ON \
+    -DENABLE_AEC=ON \
+    -DENABLE_RPATHS=OFF \
+    -DENABLE_RELATIVE_RPATHS=OFF \
+    -DENABLE_MEMFS=ON \
+    -DHAVE_BIT_REPRODUCIBLE=ON \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_NETCDF=ON \
+    -DENABLE_PYTHON=ON \
+    -DENABLE_FORTRAN=ON \
+    -DENABLE_ALIGN_MEMORY=ON \
+    -DENABLE_GRIB_TIMER=ON \
+    -DENABLE_ECCODES_OMP_THREADS=ON \
+    -DENABLE_PYTHON=ON \
+    -DPYTHON_EXECUTABLE=%{__python3}
+
+%{make_build}
+
+%check
+cd build
+ctest
+make test
+
+%install
+cd build
+%{make_install}
+
+pushd %{buildroot}%{_libdir}
+for l in libeccodes.so libeccodes_f90.so libeccodes_memfs.so
+do
+    mv $l $l.0.0.0
+    ln -s $l.0.0.0 $l.0
+    ln -s $l.0.0.0 $l
+done
+popd
+
+pushd %{buildroot}%{_bindir}
+for b in bufr_count grib_count
+do
+    rm $b
+    ln -s codes_count $b
+done
+popd
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%doc README LICENSE COPYING ChangeLog AUTHORS
+%{_bindir}/*
+%{_libdir}/*.so.0*
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/definitions
+
+%files doc
+%doc %{_datadir}/%{name}/ifs_samples/
+%doc %{_datadir}/%{name}/samples/
+%doc html
+%doc examples
+
+%files devel
+%{_datadir}/%{name}/cmake
+%{_includedir}/*
+%{_libdir}/*.so
+%{_libdir}/pkgconfig/*.pc
+
+%files -n python3-%{name}
+%{python3_sitearch}
+
+
+%changelog
+* Tue Dec 19 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.5.0-2
+- Python3 support
+- Fixed spec
+
+* Fri Dec 15 2017 Enrico Barca <enrico.barca@yacme.com> - 2.5.0-1
+- Prima pacchettizzazione per f24
