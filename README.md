@@ -1,4 +1,4 @@
-rpm packaging files for ecCcodes
+rpm packaging files for ecCodes
 ===============================================================
 
 Build status
@@ -15,7 +15,7 @@ Build status
 Introduction
 ------------
 
-This github repository neither hosts nor provide ecCodes sources, it's meant to host unofficial convenience files for Fedora and CentOs rpm packaging.
+This github repository neither hosts nor provide ecCodes sources, it's meant to host (unofficial) convenience files for Fedora and CentOs rpm packaging.
 
 ecCodes is a package developed by ECMWF which provides an application programming interface and a set of tools for decoding and encoding messages in GRIB e BUFR formats. For more info see:
 https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
