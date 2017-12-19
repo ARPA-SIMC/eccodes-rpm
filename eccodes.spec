@@ -4,8 +4,8 @@ Release:        2%{dist}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/%{name}-%{version}-Source.tar.gz?api=v2#/%{name}-%{version}-Source.tar.gz
-Patch0:         eccodes-python3.patch
-Patch1:         eccodes-py3-fixes.patch
+Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{release}/eccodes-python3.patch
+Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{release}/eccodes-py3-fixes.patch
 License:        Apache License, Version 2.0
 
 BuildRequires:  gcc-c++
