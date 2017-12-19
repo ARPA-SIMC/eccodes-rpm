@@ -29,6 +29,7 @@ BuildRequires:  libaec-devel
 BuildRequires:  jasper-devel
 BuildRequires:  openjpeg2-devel
 BuildRequires:  hdf5-devel
+BuildRequires:  netcdf-devel
 
 Provides:       grib_api = 1.23.0
 Obsoletes:      grib_api < 1.23.0
