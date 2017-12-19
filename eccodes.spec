@@ -30,6 +30,7 @@ BuildRequires:  jasper-devel
 BuildRequires:  openjpeg2-devel
 BuildRequires:  hdf5-devel
 BuildRequires:  netcdf-devel
+BuildRequires:  %{python3_vers}-numpy
 
 Provides:       grib_api = 1.23.0
 Obsoletes:      grib_api < 1.23.0
@@ -74,6 +75,7 @@ Header files and libraries for eccodes.
 %package -n python3-%{name}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{python3_vers}-numpy
 
 %description -n python3-%{name}
 Python3 bindings for eccodes.
