@@ -12,6 +12,7 @@ then
     yum install -y @buildsys-build
     yum install -y yum-utils
     yum install -y git
+    yum install -y rpmspectool
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
@@ -20,6 +21,7 @@ then
     dnf install -y @buildsys-build
     dnf install -y 'dnf-command(builddep)'
     dnf install -y git
+    dnf install -y rpmspectool
 fi
 
 $builddep -y eccodes.spec
