@@ -1,3 +1,9 @@
+%if 0%{?rhel} == 7
+%define python3_vers python34
+%else
+%define python3_vers python3
+%endif
+
 Name:           eccodes
 Version:        2.5.0
 Release:        2%{dist}
@@ -13,7 +19,7 @@ BuildRequires:  gcc-gfortran
 BuildRequires:  cmake
 BuildRequires:  flex
 BuildRequires:  bison
-BuildRequires:  python3-devel
+BuildRequires:  %{python3_vers}-devel
 BuildRequires:  swig
 BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  libpng-devel
