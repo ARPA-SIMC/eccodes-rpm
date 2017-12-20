@@ -1,3 +1,5 @@
+Author: Alastair McKinstry <mckinstry@debian.org>
+
 Index: python/CMakeLists.txt
 ===================================================================
 --- python/CMakeLists.txt
