@@ -1,111 +1,64 @@
-Author: Alastair McKinstry <mckinstry@debian.org>
-Description: Disable downloading grib files; already present
-Last-Updated: 2016-10-27
-Forwarded: not-needed
-
-Index: tests/CMakeLists.txt
-===================================================================
---- tests/CMakeLists.txt
-+++ tests/CMakeLists.txt
-@@ -159,8 +159,8 @@ foreach( test ${tests_data_reqd} )
-                   TYPE SCRIPT
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${test}.sh
-                   RESOURCES asca_139.t1.ref
--                  TEST_DEPENDS eccodes_download_gribs eccodes_download_tigge_gribs
--                               eccodes_download_bufrs eccodes_download_metars eccodes_download_gts
-+                  # TEST_DEPENDS eccodes_download_gribs eccodes_download_tigge_gribs
-+                  # eccodes_download_bufrs eccodes_download_metars eccodes_download_gts
-     )
- endforeach()
+--- cmake/ecbuild_get_test_data.cmake	2017-12-20 09:46:04.708374730 +0100
++++ cmake/ecbuild_get_test_data-patched.cmake	2017-12-20 10:17:52.683511623 +0100
+@@ -12,60 +12,7 @@
  
-@@ -179,7 +179,7 @@ if( HAVE_PYTHON AND ENABLE_EXTRA_TESTS )
-                           TYPE SCRIPT
-                           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${test}.sh
-                           ENVIRONMENT PYTHON=${PYTHON_EXECUTABLE} PYTHONPATH=${PROJECT_BINARY_DIR}/python
--                          TEST_DEPENDS eccodes_download_bufrs
-+                          # TEST_DEPENDS eccodes_download_bufrs
-         )
-     endforeach()
- endif()
-@@ -190,7 +190,7 @@ ecbuild_add_test( TARGET eccodes_t_lamb_
-                   TYPE SCRIPT
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/lamb_az_eq_area.sh
-                   RESOURCES lamb_az_eq_area.ref
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
+ function( _download_test_data _p_NAME _p_DIRNAME )
  
- # These ones are conditional
-@@ -199,28 +199,28 @@ ecbuild_add_test( TARGET eccodes_t_grib_
-                   TYPE SCRIPT
-                   CONDITION HAVE_NETCDF
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_to_netcdf.sh
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
- 
- ecbuild_add_test( TARGET eccodes_t_grib_jpeg
-                   TYPE SCRIPT
-                   CONDITION HAVE_JPEG
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_jpeg.sh
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
- 
- ecbuild_add_test( TARGET eccodes_t_grib_png
-                   TYPE SCRIPT
-                   CONDITION HAVE_PNG
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_png.sh
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
- 
- ecbuild_add_test( TARGET eccodes_t_grib_ccsds
-                   TYPE SCRIPT
-                   CONDITION HAVE_AEC
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_ccsds.sh
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
- 
- ecbuild_add_test( TARGET eccodes_t_grib_check_param_concepts
-@@ -233,5 +233,5 @@ ecbuild_add_test( TARGET eccodes_t_ecc-3
-                   TYPE SCRIPT
-                   CONDITION ENABLE_EXTRA_TESTS AND ENABLE_GRIB_TIMER
-                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/ecc-386.sh
--                  TEST_DEPENDS eccodes_download_gribs
-+                  # TEST_DEPENDS eccodes_download_gribs
- )
-Index: cmake/ecbuild_get_test_data.cmake
-===================================================================
---- cmake/ecbuild_get_test_data.cmake
-+++ cmake/ecbuild_get_test_data.cmake
-@@ -178,7 +178,7 @@ function( ecbuild_get_test_data )
- 
-     # download the data
- 
--    _download_test_data( ${_p_NAME} ${_p_DIRNAME} )
-+#    _download_test_data( ${_p_NAME} ${_p_DIRNAME} )
- 
-     # perform the checksum if requested
- 
-@@ -239,13 +239,13 @@ function( ecbuild_get_test_data )
- 
-     endif()
- 
--    add_custom_target( ${_p_TARGET} DEPENDS ${_deps} )
-+#    add_custom_target( ${_p_TARGET} DEPENDS ${_deps} )
- 
--    if( _p_EXTRACT )
--      ecbuild_debug("ecbuild_get_test_data: extracting ${_p_NAME} (post-build for target ${_p_TARGET}")
--      add_custom_command( TARGET ${_p_TARGET} POST_BUILD
--                          COMMAND ${CMAKE_COMMAND} -E tar xv ${_p_NAME} )
+-  # TODO: make that 'at ecmwf'
+-  #if(1)
+-  #unset(ENV{no_proxy})
+-  #unset(ENV{NO_PROXY})
+-  #set(ENV{http_proxy} "http://proxy.ecmwf.int:3333")
+-  #endif()
+-
+-  # Do not retry downloads by default (ECBUILD-307)
+-  if( NOT DEFINED ECBUILD_DOWNLOAD_RETRIES )
+-    set( ECBUILD_DOWNLOAD_RETRIES 0 )
+-  endif()
+-  # Use default timeout of 30s if not specified (ECBUILD-307)
+-  if( NOT DEFINED ECBUILD_DOWNLOAD_TIMEOUT )
+-    set( ECBUILD_DOWNLOAD_TIMEOUT 30 )
+-  endif()
+-
+-  find_program( CURL_PROGRAM curl )
+-  mark_as_advanced(CURL_PROGRAM)
+-
+-  if( CURL_PROGRAM )
+-
+-    add_custom_command( OUTPUT ${_p_NAME}
+-      COMMENT "(curl) downloading http://download.ecmwf.org/test-data/${_p_DIRNAME}/${_p_NAME}"
+-      COMMAND ${CURL_PROGRAM} --silent --show-error --fail --output ${_p_NAME}
+-              --retry ${ECBUILD_DOWNLOAD_RETRIES}
+-              --connect-timeout ${ECBUILD_DOWNLOAD_TIMEOUT}
+-              http://download.ecmwf.org/test-data/${_p_DIRNAME}/${_p_NAME} )
+-
+-  else()
+-
+-    find_program( WGET_PROGRAM wget )
+-
+-    if( WGET_PROGRAM )
+-
+-      # wget takes the total number of tries, curl the number or retries
+-      math( EXPR ECBUILD_DOWNLOAD_RETRIES "${ECBUILD_DOWNLOAD_RETRIES} + 1" )
+-
+-      add_custom_command( OUTPUT ${_p_NAME}
+-        COMMENT "(wget) downloading http://download.ecmwf.org/test-data/${_p_DIRNAME}/${_p_NAME}"
+-        COMMAND ${WGET_PROGRAM} -nv -O ${_p_NAME}
+-                -t ${ECBUILD_DOWNLOAD_RETRIES} -T ${ECBUILD_DOWNLOAD_TIMEOUT}
+-                http://download.ecmwf.org/test-data/${_p_DIRNAME}/${_p_NAME} )
+-
+-    else()
+-
+-      if( WARNING_CANNOT_DOWNLOAD_TEST_DATA )
+-        ecbuild_warn( "Couldn't find curl neither wget -- cannot download test data from server.\nPlease obtain the test data by other means and pleace it in the build directory." )
+-        set( WARNING_CANNOT_DOWNLOAD_TEST_DATA 1 CACHE INTERNAL "Couldn't find curl neither wget -- cannot download test data from server" )
+-        mark_as_advanced( WARNING_CANNOT_DOWNLOAD_TEST_DATA )
+-      endif()
+-
 -    endif()
-+#    if( _p_EXTRACT )
-+#      ecbuild_debug("ecbuild_get_test_data: extracting ${_p_NAME} (post-build for target ${_p_TARGET}")
-+#      add_custom_command( TARGET ${_p_TARGET} POST_BUILD
-+ #                         COMMAND ${CMAKE_COMMAND} -E tar xv ${_p_NAME} )
-+ #   endif()
+-
+-  endif()
++    # do nothing :)
  
- endfunction(ecbuild_get_test_data)
+ endfunction()
  
