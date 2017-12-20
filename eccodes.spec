@@ -91,7 +91,7 @@ Python3 bindings for eccodes.
 
 %build
 mkdir build
-push build
+pushd build
 
 %cmake .. \
     -DCMAKE_INSTALL_PREFIX=%{_prefix} \
@@ -115,21 +115,23 @@ push build
     -DENABLE_PYTHON=ON \
     -DPYTHON_EXECUTABLE=%{__python3}
 
-popd
-
 %{make_build}
+
+popd
 
 %check
 pushd build
+
 pushd data
 tar axpf %{SOURCE1}
 popd
+
 ctest
 make test
 popd
 
 %install
-push build
+pushd build
 %{make_install}
 
 pushd %{buildroot}%{_libdir}
