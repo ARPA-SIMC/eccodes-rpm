@@ -1,0 +1,28 @@
+Files: *
+Copyright: Copyright (C) 2005-2013, ECMWF (The European Centre for Medium-Range Weather Forecasts)
+License: Apache 2.0
+
+Files: src/grib_yacc.*
+Copyright: 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
+License: GPL 3.0 or later with Bison exception
+
+File: cmake/contrib/FindNumPy.cmake
+Copyright: 2012 Continuum Analytics, Inc.
+License: MIT
+
+Files: cmake/contrib/GreatCMakeCookOff/*
+Copyright:  2013 University College London
+License: MIT
+
+Files: perl/GRIB-API/ppport.h
+Copyright: 2001, Paul Marquess. version 2.*
+Copyright: 1999, Kenneth Albanowski. version 1.*
+License: Perl-like
+
+Files: src/grib_accessor_class_unpack_bufr_values.c, src/grib_accessor_class_bufr_data_element.c, src/grib_accessor_class_pack_bufr_values.c
+Copyright: 2005-2016 ECMWF
+License: GPL 3.0
+
+File: cmake/contrib/GetGitRevisionDescription.cmake, cmake/contrib/GetGitRevisionDescription.cmake.in
+Copyright: Iowa State University 2009-2010.
+License: Boost 1.0

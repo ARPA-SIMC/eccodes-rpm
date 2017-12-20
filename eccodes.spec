@@ -13,6 +13,7 @@ Summary:        Application programming interface and a set of tools for decodin
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/%{name}-%{version}-Source.tar.gz?api=v2#/%{name}-%{version}-Source.tar.gz
 Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes-data.tar.gz
+Source2:        https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/PACKAGE-LICENSING
 Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-python3.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-py3-fixes.patch
 Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-disable-download-tests.patch
@@ -150,13 +151,16 @@ popd
 
 popd
 
+install -m0644 %{SOURCE2} %{_docdir}/%{name}
+
+
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files
 %doc README ChangeLog AUTHORS
-%license LICENSE COPYING
+%license PACKAGE-LICENSING
 %{_bindir}/*
 %{_libdir}/*.so.0*
 %dir %{_datadir}/%{name}
