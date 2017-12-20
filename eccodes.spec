@@ -158,8 +158,8 @@ popd
 
 popd
 
-install -D -m0644 %{SOURCE2} %{buildroot}%{_docdir}/%{name}
-
+chmod 644 README ChangeLog AUTHORS
+cp %{SOURCE1} .
 
 %post -p /sbin/ldconfig
 
