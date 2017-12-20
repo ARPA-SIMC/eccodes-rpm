@@ -25,6 +25,11 @@ https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Python 3 patches are adapted from the one provided in debian package. For more
 info see: https://tracker.debian.org/pkg/eccodes
 
+
+## Test data
+
+The compressed tarball with test data is created using `archive_eccodes_data.sh`.
+
 ## License
 
 Apache 2.0
