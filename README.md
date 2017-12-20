@@ -1,8 +1,8 @@
-rpm packaging files for ecCodes
-===============================================================
+# rpm packaging files for ecCodes
 
-Build status
-------------
+
+## Build status
+
 
 | Environment | Status |
 | ----------- | ------ |
@@ -11,13 +11,26 @@ Build status
 | Fedora 27   | [![Build Status](https://badges.herokuapp.com/travis/ARPA-SIMC/eccodes-rpm?branch=master&env=DOCKER_IMAGE=fedora:27&label=fedora27)](https://travis-ci.org/ARPA-SIMC/eccodes-rpm) |
 
 
-Introduction
-------------
+## Introduction
 
-This github repository neither hosts nor provide ecCodes sources, it's meant to host (unofficial) convenience files for Fedora and CentOs rpm packaging.
 
-ecCodes is a package developed by ECMWF which provides an application programming interface and a set of tools for decoding and encoding messages in GRIB e BUFR formats. For more info see:
+This github repository neither hosts nor provide ecCodes sources, it's meant to
+host (unofficial) convenience files for Fedora and CentOs rpm packaging.
+
+ecCodes is a package developed by ECMWF which provides an application
+programming interface and a set of tools for decoding and encoding messages in
+GRIB e BUFR formats. For more info see:
 https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 
-Python 3 patches are adapted from the one provided in debian package. For more info see:
-https://tracker.debian.org/pkg/eccodes
+Python 3 patches are adapted from the one provided in debian package. For more
+info see: https://tracker.debian.org/pkg/eccodes
+
+## License
+
+Apache 2.0
+
+## Authors
+
+* Emanuele Di Giacomo <edigiacomo@arpae.it>
+* Daniele Branchini <dbranchini@arpae.it>
+* Alastair McKinstry <mckinstry@debian.org>
