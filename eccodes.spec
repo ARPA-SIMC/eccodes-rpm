@@ -158,7 +158,7 @@ popd
 
 popd
 
-install -m0644 %{SOURCE2} %{buildroot}%{_docdir}/%{name}
+install -D -m0644 %{SOURCE2} %{buildroot}%{_docdir}/%{name}
 
 
 %post -p /sbin/ldconfig
