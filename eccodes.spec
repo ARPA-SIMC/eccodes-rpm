@@ -159,7 +159,7 @@ popd
 popd
 
 chmod 644 README ChangeLog AUTHORS
-cp %{SOURCE1} .
+cp %{SOURCE2} .
 
 %post -p /sbin/ldconfig
 
