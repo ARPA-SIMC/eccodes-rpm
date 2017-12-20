@@ -120,6 +120,12 @@ pushd build
 popd
 
 %check
+# It seems that some tests look for the data in data/ and other tests look for
+# the data in build/data...
+pushd data
+tar axpf %{SOURCE1}
+popd
+
 pushd build
 
 pushd data
@@ -127,7 +133,6 @@ tar axpf %{SOURCE1}
 popd
 
 ctest
-make test
 popd
 
 %install
