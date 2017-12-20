@@ -12,8 +12,11 @@ Release:        %{releaseno}%{?dist}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/%{name}-%{version}-Source.tar.gz?api=v2#/%{name}-%{version}-Source.tar.gz
+Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes-data.tar.gz
+Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-python3.patch
 Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-python3.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-py3-fixes.patch
+Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-disable-download-tests.patch
 License:        Apache License, Version 2.0
 
 BuildRequires:  gcc-c++
@@ -84,10 +87,11 @@ Python3 bindings for eccodes.
 %setup -q -n %{name}-%{version}-Source
 %patch0
 %patch1
+%patch2
 
 %build
 mkdir build
-cd build
+push build
 
 %cmake .. \
     -DCMAKE_INSTALL_PREFIX=%{_prefix} \
@@ -111,15 +115,21 @@ cd build
     -DENABLE_PYTHON=ON \
     -DPYTHON_EXECUTABLE=%{__python3}
 
+popd
+
 %{make_build}
 
 %check
-cd build
+pushd build
+pushd data
+tar axpf %{SOURCE1}
+popd
 ctest
 make test
+popd
 
 %install
-cd build
+push build
 %{make_install}
 
 pushd %{buildroot}%{_libdir}
@@ -137,6 +147,8 @@ do
     rm $b
     ln -s codes_count $b
 done
+popd
+
 popd
 
 %post -p /sbin/ldconfig

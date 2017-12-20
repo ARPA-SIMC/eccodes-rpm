@@ -1,0 +1,111 @@
+Author: Alastair McKinstry <mckinstry@debian.org>
+Description: Disable downloading grib files; already present
+Last-Updated: 2016-10-27
+Forwarded: not-needed
+
+Index: tests/CMakeLists.txt
+===================================================================
+--- tests/CMakeLists.txt
++++ tests/CMakeLists.txt
+@@ -159,8 +159,8 @@ foreach( test ${tests_data_reqd} )
+                   TYPE SCRIPT
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${test}.sh
+                   RESOURCES asca_139.t1.ref
+-                  TEST_DEPENDS eccodes_download_gribs eccodes_download_tigge_gribs
+-                               eccodes_download_bufrs eccodes_download_metars eccodes_download_gts
++                  # TEST_DEPENDS eccodes_download_gribs eccodes_download_tigge_gribs
++                  # eccodes_download_bufrs eccodes_download_metars eccodes_download_gts
+     )
+ endforeach()
+ 
+@@ -179,7 +179,7 @@ if( HAVE_PYTHON AND ENABLE_EXTRA_TESTS )
+                           TYPE SCRIPT
+                           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${test}.sh
+                           ENVIRONMENT PYTHON=${PYTHON_EXECUTABLE} PYTHONPATH=${PROJECT_BINARY_DIR}/python
+-                          TEST_DEPENDS eccodes_download_bufrs
++                          # TEST_DEPENDS eccodes_download_bufrs
+         )
+     endforeach()
+ endif()
+@@ -190,7 +190,7 @@ ecbuild_add_test( TARGET eccodes_t_lamb_
+                   TYPE SCRIPT
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/lamb_az_eq_area.sh
+                   RESOURCES lamb_az_eq_area.ref
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+ 
+ # These ones are conditional
+@@ -199,28 +199,28 @@ ecbuild_add_test( TARGET eccodes_t_grib_
+                   TYPE SCRIPT
+                   CONDITION HAVE_NETCDF
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_to_netcdf.sh
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+ 
+ ecbuild_add_test( TARGET eccodes_t_grib_jpeg
+                   TYPE SCRIPT
+                   CONDITION HAVE_JPEG
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_jpeg.sh
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+ 
+ ecbuild_add_test( TARGET eccodes_t_grib_png
+                   TYPE SCRIPT
+                   CONDITION HAVE_PNG
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_png.sh
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+ 
+ ecbuild_add_test( TARGET eccodes_t_grib_ccsds
+                   TYPE SCRIPT
+                   CONDITION HAVE_AEC
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/grib_ccsds.sh
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+ 
+ ecbuild_add_test( TARGET eccodes_t_grib_check_param_concepts
+@@ -233,5 +233,5 @@ ecbuild_add_test( TARGET eccodes_t_ecc-3
+                   TYPE SCRIPT
+                   CONDITION ENABLE_EXTRA_TESTS AND ENABLE_GRIB_TIMER
+                   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/ecc-386.sh
+-                  TEST_DEPENDS eccodes_download_gribs
++                  # TEST_DEPENDS eccodes_download_gribs
+ )
+Index: cmake/ecbuild_get_test_data.cmake
+===================================================================
+--- cmake/ecbuild_get_test_data.cmake
++++ cmake/ecbuild_get_test_data.cmake
+@@ -178,7 +178,7 @@ function( ecbuild_get_test_data )
+ 
+     # download the data
+ 
+-    _download_test_data( ${_p_NAME} ${_p_DIRNAME} )
++#    _download_test_data( ${_p_NAME} ${_p_DIRNAME} )
+ 
+     # perform the checksum if requested
+ 
+@@ -239,13 +239,13 @@ function( ecbuild_get_test_data )
+ 
+     endif()
+ 
+-    add_custom_target( ${_p_TARGET} DEPENDS ${_deps} )
++#    add_custom_target( ${_p_TARGET} DEPENDS ${_deps} )
+ 
+-    if( _p_EXTRACT )
+-      ecbuild_debug("ecbuild_get_test_data: extracting ${_p_NAME} (post-build for target ${_p_TARGET}")
+-      add_custom_command( TARGET ${_p_TARGET} POST_BUILD
+-                          COMMAND ${CMAKE_COMMAND} -E tar xv ${_p_NAME} )
+-    endif()
++#    if( _p_EXTRACT )
++#      ecbuild_debug("ecbuild_get_test_data: extracting ${_p_NAME} (post-build for target ${_p_TARGET}")
++#      add_custom_command( TARGET ${_p_TARGET} POST_BUILD
++ #                         COMMAND ${CMAKE_COMMAND} -E tar xv ${_p_NAME} )
++ #   endif()
+ 
+ endfunction(ecbuild_get_test_data)
+ 
