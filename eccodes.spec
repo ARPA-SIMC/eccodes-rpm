@@ -155,7 +155,8 @@ popd
 %postun -p /sbin/ldconfig
 
 %files
-%doc README LICENSE COPYING ChangeLog AUTHORS
+%doc README ChangeLog AUTHORS
+%license LICENSE COPYING
 %{_bindir}/*
 %{_libdir}/*.so.0*
 %dir %{_datadir}/%{name}
