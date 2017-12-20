@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 2
+%global releaseno 3
 
 Name:           eccodes
 Version:        2.5.0
