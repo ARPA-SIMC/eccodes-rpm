@@ -32,7 +32,7 @@ then
     mkdir -p ~/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
     cp eccodes.spec eccodes-py3-fixes.patch eccodes-python3.patch ~/rpmbuild/SPECS/
     spectool -g -R ~/rpmbuild/SPECS/eccodes.spec
-    rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec
+    rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec &>/dev/null
     find ~/rpmbuild/{RPMS,SRPMS}/ -name "${pkgname}*rpm" -exec cp -v {} . \;
     # TODO upload ${pkgname}*.rpm to github release on deploy stage
 else
