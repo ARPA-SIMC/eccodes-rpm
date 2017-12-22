@@ -13,6 +13,7 @@ then
     yum install -y yum-utils
     yum install -y git
     yum install -y rpmdevtools
+    yum install -y pv
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
@@ -22,6 +23,7 @@ then
     dnf install -y 'dnf-command(builddep)'
     dnf install -y git
     dnf install -y rpmdevtools
+    dnf install -y pv
 fi
 
 $builddep -y eccodes.spec
@@ -33,7 +35,7 @@ then
     cp eccodes.spec ~/rpmbuild/SPECS/
     cp *.patch ~/rpmbuild/SOURCES/
     spectool -g -R ~/rpmbuild/SPECS/eccodes.spec
-    rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec
+    rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec 2>&1 | pv -q -L 3k
     find ~/rpmbuild/{RPMS,SRPMS}/ -name "${pkgname}*rpm" -exec cp -v {} . \;
     # TODO upload ${pkgname}*.rpm to github release on deploy stage
 else
