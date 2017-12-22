@@ -90,6 +90,7 @@ Python3 bindings for eccodes.
 %patch0
 %patch1
 %patch2
+%patch3
 
 %build
 mkdir build
