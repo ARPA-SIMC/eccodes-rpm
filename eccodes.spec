@@ -93,6 +93,10 @@ Python3 bindings for eccodes.
 %patch3
 
 %build
+pushd python
+swig -python -module gribapi_swig -o swig_wrap_numpy.c gribapi_swig.i
+popd
+
 mkdir build
 pushd build
 
