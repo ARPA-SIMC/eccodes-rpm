@@ -4,10 +4,10 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 3
+%global releaseno 1
 
 Name:           eccodes
-Version:        2.5.0
+Version:        2.6.0
 Release:        %{releaseno}%{?dist}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
