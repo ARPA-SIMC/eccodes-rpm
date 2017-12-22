@@ -25,8 +25,6 @@ BuildRequires:  gcc-gfortran
 BuildRequires:  cmake
 BuildRequires:  flex
 BuildRequires:  bison
-BuildRequires:  %{python3_vers}-devel
-BuildRequires:  swig
 BuildRequires:  perl
 BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  libpng-devel
@@ -35,7 +33,9 @@ BuildRequires:  jasper-devel
 BuildRequires:  openjpeg2-devel
 BuildRequires:  hdf5-devel
 BuildRequires:  netcdf-devel
+BuildRequires:  %{python3_vers}-devel
 BuildRequires:  %{python3_vers}-numpy
+BuildRequires:  swig
 
 Provides:       grib_api = 1.23.0
 Obsoletes:      grib_api < 1.23.0
