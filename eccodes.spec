@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 1
+%global releaseno 2
 
 Name:           eccodes
 Version:        2.6.0
