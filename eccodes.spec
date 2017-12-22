@@ -17,6 +17,7 @@ Source2:        https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-python3.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-py3-fixes.patch
 Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-disable-download-tests.patch
+Patch3:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-numpy-fixes.patch
 License:        Apache License, Version 2.0
 
 BuildRequires:  gcc-c++
