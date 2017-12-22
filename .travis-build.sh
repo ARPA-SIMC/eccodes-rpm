@@ -30,7 +30,8 @@ if [[ $image =~ ^fedora: || $image =~ ^centos: ]]
 then
     pkgname="$(rpmspec -q --qf="eccodes-%{version}-%{release}\n" eccodes.spec | head -n1)"
     mkdir -p ~/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
-    cp eccodes.spec *.patch ~/rpmbuild/SPECS/
+    cp eccodes.spec ~/rpmbuild/SPECS/
+    cp *.patch ~/rpmbuild/SOURCES/
     spectool -g -R ~/rpmbuild/SPECS/eccodes.spec
     rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec
     find ~/rpmbuild/{RPMS,SRPMS}/ -name "${pkgname}*rpm" -exec cp -v {} . \;
