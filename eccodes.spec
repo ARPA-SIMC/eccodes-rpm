@@ -191,6 +191,10 @@ cp %{SOURCE2} .
 
 
 %changelog
+* Fri Dec 22 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.6.0-2
+- New eccodes version
+- Fix SWIG for Python3 support
+
 * Tue Dec 19 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.5.0-2
 - Python3 support
 - Fixed spec
