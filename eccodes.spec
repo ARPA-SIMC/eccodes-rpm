@@ -27,6 +27,7 @@ BuildRequires:  flex
 BuildRequires:  bison
 BuildRequires:  %{python3_vers}-devel
 BuildRequires:  swig
+BuildRequires:  perl
 BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  libpng-devel
 BuildRequires:  libaec-devel
