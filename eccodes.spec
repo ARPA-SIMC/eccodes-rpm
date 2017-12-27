@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 2
+%global releaseno 3
 
 Name:           eccodes
 Version:        2.6.0
@@ -192,6 +192,9 @@ cp %{SOURCE2} .
 
 
 %changelog
+* Wed Dec 27 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.6.0-3
+- Updated BuildRequires (perl-Getopt-Long) for Fedora 26
+
 * Fri Dec 22 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.6.0-2
 - New eccodes version
 - Fix SWIG for Python3 support
