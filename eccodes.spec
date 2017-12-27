@@ -26,6 +26,7 @@ BuildRequires:  cmake
 BuildRequires:  flex
 BuildRequires:  bison
 BuildRequires:  perl
+BuildRequires:  perl-Getopt-Long
 BuildRequires:  libjpeg-turbo-devel
 BuildRequires:  libpng-devel
 BuildRequires:  libaec-devel
