@@ -39,7 +39,7 @@ Index: python/gribapi_swig.i
 +  int fd;
 +  fd = PyObject_AsFileDescriptor($input);
 +  if ( fd >= 0 ) {
-+    $1 = fopen(fd, "r+"); 
++    $1 = fdopen(fd, "r+");
 +  } else {
 +    PyErr_SetString(PyExc_TypeError, "$1_name must be a file type.");
 +    return NULL;
