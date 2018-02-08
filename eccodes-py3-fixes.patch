@@ -22,24 +22,30 @@ Index: python/gribapi_swig.i
 ===================================================================
 --- python/gribapi_swig.i
 +++ python/gribapi_swig.i
-@@ -17,14 +17,17 @@
+@@ -17,14 +17,25 @@
  import_array();
  %}
  
 -/* Converts a PyFile instance to a stdio FILE* */
 +
-+ /* FIXME: Can we make this ro/rw ? */
  %typemap(in) FILE* {
 -    if ( PyFile_Check($input) ){
 -        $1 = PyFile_AsFile($input);
 -    } else {
 -        PyErr_SetString(PyExc_TypeError, "$1_name must be a file type.");
--        return NULL;
--    }
 +  int fd;
 +  fd = PyObject_AsFileDescriptor($input);
 +  if ( fd >= 0 ) {
-+    $1 = fdopen(fd, "r+");
++    PyObject* modeattr = PyObject_GetAttrString($input, "mode");
++    char* mode = NULL;
++    if (modeattr == NULL) {
++        PyErr_SetString(PyExc_TypeError, "Missing 'mode' attribute for $1_name");
+         return NULL;
+     }
++    mode = PyBytes_AsString(PyUnicode_AsUTF8String(modeattr));
++    if (mode == NULL)
++        return NULL;
++    $1 = fdopen(fd, mode);
 +  } else {
 +    PyErr_SetString(PyExc_TypeError, "$1_name must be a file type.");
 +    return NULL;
@@ -47,7 +53,7 @@ Index: python/gribapi_swig.i
  }
  
  %pointer_class(int, intp);
-@@ -67,6 +70,7 @@ int grib_c_count_in_file(FILE* f,int* OU
+@@ -67,6 +78,7 @@
  // grib handle operations
  int grib_c_release(int* gid);
  int grib_c_write(int* gid, FILE* f);
@@ -55,7 +61,7 @@ Index: python/gribapi_swig.i
  int grib_c_get_size_long(int* gid, char* key, long* OUTPUT);
  int grib_c_get_string_length(int* gid, char* key, size_t* OUTPUT);
  int grib_c_clone(int* gid,int* INOUT);
-@@ -77,9 +81,9 @@ int grib_c_get_native_type(int* gid, cha
+@@ -77,9 +89,9 @@
  // ---
  
  // multi support
