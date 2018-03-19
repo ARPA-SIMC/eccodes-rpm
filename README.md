@@ -1,0 +1,3 @@
+# eccodes
+
+The eccodes package
