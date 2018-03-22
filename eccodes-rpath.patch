@@ -1,0 +1,13 @@
+--- eccodes-2.7.0-Source.orig/cmake/pkg-config.pc.in	2018-03-02 10:52:15.000000000 +0100
++++ eccodes-2.7.0-Source/cmake/pkg-config.pc.in	2018-03-10 10:16:43.852822378 +0100
+@@ -14,9 +14,7 @@ CC=@CMAKE_C_COMPILER@
+ CXX=@CMAKE_CXX_COMPILER@
+ FC=@CMAKE_Fortran_COMPILER@
+ 
+-rpath=@RPATH_FLAG@${libdir}
+-
+-libs=-L${libdir} ${rpath} @PKGCONFIG_LIBS@
++libs=-L${libdir} @PKGCONFIG_LIBS@
+ 
+ libs_private=@PKGCONFIG_LIBS_PRIVATE@
+ 

@@ -1,0 +1,20 @@
+--- eccodes-2.7.0-Source.orig/tests/bufr_dump_encode_fortran.sh	2018-03-02 10:52:20.000000000 +0100
++++ eccodes-2.7.0-Source/tests/bufr_dump_encode_fortran.sh	2018-03-10 10:16:43.857822252 +0100
+@@ -41,6 +41,7 @@ if command -v pkg-config >/dev/null 2>&1
+     INSTALL_DIR=`grep -w CMAKE_INSTALL_PREFIX $CACHE_FILE | cut -d'=' -f2`
+     FLAGS_LINKER=`echo $FLAGS_LINKER | sed -e "s:$INSTALL_DIR:$BUILD_DIR:g"`
+     FLAGS_COMPILER=`echo $FLAGS_COMPILER | sed -e "s:$INSTALL_DIR:$BUILD_DIR:g"`
++    FLAGS_COMPILER="${FLAGS_COMPILER} -I${BUILD_DIR}/include"
+ 
+     # TODO: For now only support when shared libs enabled
+     SHARED_LIBS=`grep -w BUILD_SHARED_LIBS $CACHE_FILE | cut -d'=' -f2`
+--- eccodes-2.7.0-Source.orig/tests/bufr_dump_decode_fortran.sh	2018-03-02 10:52:20.000000000 +0100
++++ eccodes-2.7.0-Source/tests/bufr_dump_decode_fortran.sh	2018-03-10 10:16:43.857822252 +0100
+@@ -41,6 +41,7 @@ if command -v pkg-config >/dev/null 2>&1
+     INSTALL_DIR=`grep -w CMAKE_INSTALL_PREFIX $CACHE_FILE | cut -d'=' -f2`
+     FLAGS_LINKER=`echo $FLAGS_LINKER | sed -e "s:$INSTALL_DIR:$BUILD_DIR:g"`
+     FLAGS_COMPILER=`echo $FLAGS_COMPILER | sed -e "s:$INSTALL_DIR:$BUILD_DIR:g"`
++    FLAGS_COMPILER="${FLAGS_COMPILER} -I${BUILD_DIR}/include"
+ 
+     # TODO: For now only support when shared libs enabled
+     SHARED_LIBS=`grep -w BUILD_SHARED_LIBS $CACHE_FILE | cut -d'=' -f2`
