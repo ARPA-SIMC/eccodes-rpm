@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -94,6 +94,15 @@ Requires: %{name}-data = %{version}-%{release}
 # So the old grib_api will need to be obsoleted.
 
 Obsoletes:      grib_api < %{final_grib_api_version}
+
+# as explained in bugzilla #1562066
+ExcludeArch: i686
+# as explained in bugzilla #1562071
+ExcludeArch: ppc64
+# as explained in bugzilla #1562076
+ExcludeArch: s390x
+# as explained in bugzilla #1562084
+ExcludeArch: armv7hl
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -336,6 +345,9 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Mar 29 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.0-2
+- added ExcludeArch statements for the failing architectures
+
 * Thu Mar 22 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.0-1
 - Upgrade to version 2.7.0
 - Fix rpath and some permission issues
