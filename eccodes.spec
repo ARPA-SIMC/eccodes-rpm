@@ -4,10 +4,10 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 3
+%global releaseno 1
 
 Name:           eccodes
-Version:        2.6.0
+Version:        2.7.0
 Release:        %{releaseno}%{?dist}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
@@ -192,6 +192,9 @@ cp %{SOURCE2} .
 
 
 %changelog
+* Tue Mar 17 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-1
+- New eccodes version
+
 * Wed Dec 27 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.6.0-3
 - Updated BuildRequires (perl-Getopt-Long) for Fedora 26
 
