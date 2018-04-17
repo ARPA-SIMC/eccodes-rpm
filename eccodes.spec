@@ -14,7 +14,7 @@ URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/%{name}-%{version}-Source.tar.gz?api=v2#/%{name}-%{version}-Source.tar.gz
 # http protocol apparently unsupported on copr
 #Source1:        http://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
-Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes-data.tar.gz
+Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
 Source2:        https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/PACKAGE-LICENSING
 Patch0:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-python3.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-py3-fixes.patch
