@@ -192,7 +192,7 @@ cp %{SOURCE2} .
 
 
 %changelog
-* Tue Mar 17 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-1
+* Tue Apr 17 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-1
 - New eccodes version
 
 * Wed Dec 27 2017 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.6.0-3
