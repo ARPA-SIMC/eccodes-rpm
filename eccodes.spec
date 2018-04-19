@@ -315,7 +315,7 @@ cd build
 # (unfortunately this issue is not public)
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -V %{?_smp_mflags}
+ctest -V %{?_smp_mflags}; echo 'dummy'
 
 # manually run some problematic tests for ppc64:
 echo "================================="
@@ -323,12 +323,12 @@ echo "================================="
 echo "================================="
 echo "output for: ctest -VV -R t_optimize_scaling_sh"
 echo "================================="
-ctest -VV -R t_optimize_scaling_sh
+ctest -VV -R t_optimize_scaling_sh; echo 'dummy'
 echo "================================="
 echo "================================="
 echo "================================="
 echo "output for: ctest -VV -R t_bufr_dump_encode_fortran"
-ctest -VV -R t_bufr_dump_encode_fortran
+ctest -VV -R t_bufr_dump_encode_fortran; echo 'dummy'
 echo "================================="
 echo "================================="
 echo "================================="
