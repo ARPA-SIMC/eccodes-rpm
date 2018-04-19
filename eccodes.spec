@@ -236,6 +236,7 @@ cd build
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
         -DPYTHON_EXECUTABLE=%{_bindir}/python2 \
         ..
+# or: -DCMAKE_SKIP_RPATH=ON ??
 
 %make_build
 
@@ -315,6 +316,22 @@ cd build
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
 ctest -V %{?_smp_mflags}
+
+# manually run some problematic tests for ppc64:
+echo "================================="
+echo "================================="
+echo "================================="
+echo "output for: ctest -VV -R t_optimize_scaling_sh"
+echo "================================="
+ctest -VV -R t_optimize_scaling_sh
+echo "================================="
+echo "================================="
+echo "================================="
+echo "output for: ctest -VV -R t_bufr_dump_encode_fortran"
+ctest -VV -R t_bufr_dump_encode_fortran
+echo "================================="
+echo "================================="
+echo "================================="
 
 %files
 %license LICENSE
