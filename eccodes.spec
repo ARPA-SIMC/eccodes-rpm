@@ -98,7 +98,7 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 # as explained in bugzilla #1562066
 ExcludeArch: i686
 # as explained in bugzilla #1562071
-ExcludeArch: ppc64
+# ExcludeArch: ppc64
 # as explained in bugzilla #1562076
 ExcludeArch: s390x
 # as explained in bugzilla #1562084
