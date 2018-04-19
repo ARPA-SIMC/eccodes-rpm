@@ -315,7 +315,7 @@ cd build
 # (unfortunately this issue is not public)
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -V %{?_smp_mflags}; echo 'dummy'
+# ctest -V %{?_smp_mflags}
 
 # manually run some problematic tests for ppc64:
 echo "================================="
