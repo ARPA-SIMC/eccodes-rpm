@@ -313,8 +313,8 @@ cd build
 # so a patch has been added to solve this for now.
 # See: https://software.ecmwf.int/issues/browse/SUP-1812
 # (unfortunately this issue is not public)
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-LIBRARY_PATH=%{buildroot}/%{_libdir} \
+#LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+#LIBRARY_PATH=%{buildroot}/%{_libdir} \
 # ctest -V %{?_smp_mflags}
 
 # manually run some problematic tests for ppc64:
@@ -323,11 +323,15 @@ echo "================================="
 echo "================================="
 echo "output for: ctest -VV -R t_optimize_scaling_sh"
 echo "================================="
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+LIBRARY_PATH=%{buildroot}/%{_libdir} \
 ctest -VV -R t_optimize_scaling_sh; echo 'dummy'
 echo "================================="
 echo "================================="
 echo "================================="
 echo "output for: ctest -VV -R t_bufr_dump_encode_fortran"
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+LIBRARY_PATH=%{buildroot}/%{_libdir} \
 ctest -VV -R t_bufr_dump_encode_fortran; echo 'dummy'
 echo "================================="
 echo "================================="
