@@ -1,0 +1,56 @@
+# use like this:
+# rpmlint --file eccodes.rpmlintrc *.rpm
+# example: addFilter ("^foo-.*regex-match-for-rpmlint-warning")
+
+# these are invalid spelling warnings. GRIB and BUFR are correct, since these are
+# the names of the data files that this software handles.
+# the description itself is a 1-to-1 copy of what the (UK-based) upstream
+# writes, and I am not going to translate this to US spelling ...
+addFilter ("W: spelling-error %description -l en_US behaviour -> behavior")
+addFilter ("W: spelling-error %description -l en_US grib ->")
+addFilter ("W: spelling-error %description -l en_US bufr ->")
+
+# this data file with wrong line ending has been added to the software on purpose
+# for testing purposes, so this is no mistake
+addFilter ("eccodes-doc.noarch: W: wrong-file-end-of-line-encoding /usr/share/doc/eccodes/examples/python/flight_data.csv")
+
+# these data files are no scripts. The dataformat just has an unfortunate first line
+# starting with #! so it resembles a shebang line.
+# see also comment #3 in the review request at https://bugzilla.redhat.com/show_bug.cgi?id=1508950
+addFilter ("^eccodes-data.noarch: E: wrong-script-interpreter /usr/share/eccodes/definitions/grib1/local.82.0.def")
+addFilter ("^eccodes-data.noarch: E: non-executable-script /usr/share/eccodes/definitions/grib1/local.82.0.def")
+addFilter ("^eccodes-data.noarch: E: wrong-script-interpreter /usr/share/eccodes/definitions/grib1/local.82.83.def")
+addFilter ("^eccodes-data.noarch: E: non-executable-script /usr/share/eccodes/definitions/grib1/local.82.83.def")
+
+# this is a false error (its an rpmlint bug).
+# the spec file now uses %ldconfig_scriptlets in stead of the old ldconfig-postin/postun
+# see also comment #18 in the review request at https://bugzilla.redhat.com/show_bug.cgi?id=1508950
+addFilter ("^eccodes.x86_64: E: library-without-ldconfig-postin /usr/lib64/libeccodes.so.0.1")
+addFilter ("^eccodes.x86_64: E: library-without-ldconfig-postun /usr/lib64/libeccodes.so.0.1")
+addFilter ("^eccodes.x86_64: E: library-without-ldconfig-postin /usr/lib64/libeccodes_f90.so.0.1")
+addFilter ("^eccodes.x86_64: E: library-without-ldconfig-postun /usr/lib64/libeccodes_f90.so.0.1")
+
+# this is an rpmlint bug
+# see also comment #8 in the review request at https://bugzilla.redhat.com/show_bug.cgi?id=1508950
+addFilter ("eccodes-debuginfo.x86_64: E: useless-provides debuginfo\(build-id\)")
+
+# there is no full compatibility between the old grib_api and the new eccodes
+# so only obsoletes can be used bu no provides.
+# see also comment #21 in the review request at https://bugzilla.redhat.com/show_bug.cgi?id=1508950
+addFilter ("^eccodes.x86_64: W: obsolete-not-provided grib_api")
+addFilter ("^eccodes-devel.x86_64: W: obsolete-not-provided grib_api-devel")
+addFilter ("^eccodes-devel.x86_64: W: only-non-binary-in-usr-lib")
+
+# documentation is in a dedicated doc subpackage,
+# so these warnings have no merit
+addFilter ("python2-eccodes.x86_64: W: no-documentation")
+addFilter ("eccodes-debugsource.x86_64: W: no-documentation")
+addFilter ("eccodes-devel.x86_64: W: no-documentation")
+addFilter ("eccodes-data.noarch: W: no-documentation")
+
+# temporary disable the man page warning, since it obscures other problems that
+# may be more important, and it has already been reported upstream
+# see also comment #3 in the review request at https://bugzilla.redhat.com/show_bug.cgi?id=1508950
+addFilter ("eccodes.x86_64: W: no-manual-page-for-binary")
+
+# addFilter ("")

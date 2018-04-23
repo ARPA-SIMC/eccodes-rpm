@@ -98,7 +98,7 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 # as explained in bugzilla #1562066
 ExcludeArch: i686
 # as explained in bugzilla #1562071
-# ExcludeArch: ppc64
+ExcludeArch: ppc64
 # as explained in bugzilla #1562076
 ExcludeArch: s390x
 # as explained in bugzilla #1562084
@@ -236,7 +236,6 @@ cd build
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
         -DPYTHON_EXECUTABLE=%{_bindir}/python2 \
         ..
-# or: -DCMAKE_SKIP_RPATH=ON ??
 
 %make_build
 
@@ -313,29 +312,9 @@ cd build
 # so a patch has been added to solve this for now.
 # See: https://software.ecmwf.int/issues/browse/SUP-1812
 # (unfortunately this issue is not public)
-#LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-#LIBRARY_PATH=%{buildroot}/%{_libdir} \
-# ctest -V %{?_smp_mflags}
-
-# manually run some problematic tests for ppc64:
-#echo "================================="
-#echo "================================="
-#echo "================================="
-#echo "output for: ctest -VV -R t_optimize_scaling_sh"
-#echo "================================="
-#LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-#LIBRARY_PATH=%{buildroot}/%{_libdir} \
-#ctest -VV -R t_optimize_scaling_sh
-echo "================================="
-echo "================================="
-echo "================================="
-echo "output for: ctest -VV -R t_bufr_dump_encode_fortran"
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -VV -R t_bufr_dump_encode_fortran
-echo "================================="
-echo "================================="
-echo "================================="
+ctest -V %{?_smp_mflags}
 
 %files
 %license LICENSE
