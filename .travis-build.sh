@@ -13,7 +13,7 @@ then
     yum install -q -y yum-utils
     yum install -q -y git
     yum install -q -y rpmdevtools
-    yum install --q y pv
+    yum install -q -y pv
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
@@ -23,7 +23,7 @@ then
     dnf install -q -y 'dnf-command(builddep)'
     dnf install -q -y git
     dnf install -q -y rpmdevtools
-  o  dnf install -q -y pv
+    dnf install -q -y pv
 fi
 
 $builddep -q -y eccodes.spec
