@@ -199,12 +199,9 @@ popd
 popd
 
 %install
-pushd build
-%{make_install}
-popd
 
-pushd %{py3dir}
 pushd build
+
 %{make_install}
 
 pushd %{buildroot}%{_libdir}
@@ -229,10 +226,16 @@ done
 popd
 
 popd
-popd
 
 chmod 644 README ChangeLog AUTHORS
 cp %{SOURCE2} .
+
+pushd %{py3dir}
+pushd build
+%{make_install} -C python
+popd
+popd
+
 
 %post -p /sbin/ldconfig
 
