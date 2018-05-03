@@ -154,7 +154,7 @@ popd
 
 # fortran modules installed in the wrong dir
 mkdir -p %{buildroot}%{_fmoddir}
-mv %{buildroot}%{_libdir}/*.mod %{buildroot}%{_fmoddir}
+mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}
 
 pushd %{buildroot}%{_bindir}
 for b in bufr_count grib_count
