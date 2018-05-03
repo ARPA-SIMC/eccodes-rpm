@@ -38,6 +38,8 @@ BuildRequires:  hdf5-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  %{python3_vers}-devel
 BuildRequires:  %{python3_vers}-numpy
+BuildRequires:  python2-devel
+BuildRequires:  python2-numpy
 BuildRequires:  swig
 
 Provides:       grib_api = 1.23.0
@@ -80,6 +82,14 @@ Obsoletes:      grib_api-devel < 1.23.0
 %description devel
 Header files and libraries for eccodes.
 
+%package -n python2-%{name}
+Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python2-numpy
+
+%description -n python2-%{name}
+Python2 bindings for eccodes.
+
 %package -n python3-%{name}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 Requires:       %{name}%{?_isa} = %{version}-%{release}
@@ -95,7 +105,44 @@ Python3 bindings for eccodes.
 %patch2
 %patch3
 
+rm -rf %{py3dir}
+cp -a . %{py3dir}
+
 %build
+pushd python
+swig -python -module gribapi_swig -o swig_wrap_numpy.c gribapi_swig.i
+popd
+
+mkdir build
+pushd build
+
+%cmake .. \
+    -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+    -DINSTALL_LIB_DIR=%{_lib} \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
+    -DENABLE_INSTALL_ECCODES_SAMPLES=ON \
+    -DENABLE_PNG=ON \
+    -DENABLE_AEC=ON \
+    -DENABLE_RPATHS=OFF \
+    -DENABLE_RELATIVE_RPATHS=OFF \
+    -DENABLE_MEMFS=ON \
+    -DHAVE_BIT_REPRODUCIBLE=ON \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_NETCDF=ON \
+    -DENABLE_PYTHON=ON \
+    -DENABLE_FORTRAN=ON \
+    -DENABLE_ALIGN_MEMORY=ON \
+    -DENABLE_GRIB_TIMER=ON \
+    -DENABLE_ECCODES_OMP_THREADS=ON \
+    -DENABLE_PYTHON=ON \
+    -DPYTHON_EXECUTABLE=%{__python2}
+
+%{make_build}
+
+popd
+
+pushd %{py3dir}
 pushd python
 swig -python -module gribapi_swig -o swig_wrap_numpy.c gribapi_swig.i
 popd
@@ -128,6 +175,8 @@ pushd build
 %{make_build}
 
 popd
+popd
+
 
 %check
 # It seems that some tests look for the data in data/ and other tests look for
@@ -139,7 +188,22 @@ tar axpf %{SOURCE1}
 ctest
 popd
 
+pushd %{py3dir}
+tar axpf %{SOURCE1}
+
+pushd build
+tar axpf %{SOURCE1}
+ctest
+popd
+
+popd
+
 %install
+pushd build
+%{make_install}
+popd
+
+pushd %{py3dir}
 pushd build
 %{make_install}
 
@@ -164,6 +228,7 @@ do
 done
 popd
 
+popd
 popd
 
 chmod 644 README ChangeLog AUTHORS
@@ -193,6 +258,9 @@ cp %{SOURCE2} .
 %{_fmoddir}/*.mod
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
+
+%files -n python2-%{name}
+%{python2_sitearch}
 
 %files -n python3-%{name}
 %{python3_sitearch}
