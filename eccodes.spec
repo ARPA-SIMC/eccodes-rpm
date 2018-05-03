@@ -118,6 +118,7 @@ pushd build
 
 %cmake .. \
     -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+    -DCMAKE_INSTALL_MESSAGE=NEVER \
     -DINSTALL_LIB_DIR=%{_lib} \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
@@ -152,6 +153,7 @@ pushd build
 
 %cmake .. \
     -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+    -DCMAKE_INSTALL_MESSAGE=NEVER \
     -DINSTALL_LIB_DIR=%{_lib} \
     -DCMAKE_BUILD_TYPE=Release \
     -DENABLE_INSTALL_ECCODES_DEFINITIONS=ON \
