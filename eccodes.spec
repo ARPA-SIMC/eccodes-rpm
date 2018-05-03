@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 1
+%global releaseno 2
 
 Name:           eccodes
 Version:        2.7.0
@@ -152,6 +152,10 @@ do
 done
 popd
 
+# fortran modules installed in the wrong dir
+mkdir -p %{buildroot}%{_fmoddir}
+mv %{buildroot}%{_libdir}/*.mod %{buildroot}%{_fmoddir}
+
 pushd %{buildroot}%{_bindir}
 for b in bufr_count grib_count
 do
@@ -186,6 +190,7 @@ cp %{SOURCE2} .
 %files devel
 %{_datadir}/%{name}/cmake
 %{_includedir}/*
+%{_fmoddir}/*.mod
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*.pc
 
@@ -194,6 +199,9 @@ cp %{SOURCE2} .
 
 
 %changelog
+* Thu May 3 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-2
+- Moved fortran modules in the right dir
+
 * Tue Apr 17 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-1
 - New eccodes version
 
