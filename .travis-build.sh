@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -exo pipefail
 
 image=$1
 
@@ -8,25 +8,25 @@ then
     pkgcmd="yum"
     builddep="yum-builddep"
     sed -i '/^tsflags=/d' /etc/yum.conf
-    yum install -y epel-release
-    yum install -y @buildsys-build
-    yum install -y yum-utils
-    yum install -y git
-    yum install -y rpmdevtools
-    yum install -y pv
+    yum install -q -y epel-release
+    yum install -q -y @buildsys-build
+    yum install -q -y yum-utils
+    yum install -q -y git
+    yum install -q -y rpmdevtools
+    yum install --q y pv
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
     builddep="dnf builddep"
     sed -i '/^tsflags=/d' /etc/dnf/dnf.conf
-    dnf install -y @buildsys-build
-    dnf install -y 'dnf-command(builddep)'
-    dnf install -y git
-    dnf install -y rpmdevtools
-    dnf install -y pv
+    dnf install -q -y @buildsys-build
+    dnf install -q -y 'dnf-command(builddep)'
+    dnf install -q -y git
+    dnf install -q -y rpmdevtools
+  o  dnf install -q -y pv
 fi
 
-$builddep -y eccodes.spec
+$builddep -q -y eccodes.spec
 
 if [[ $image =~ ^fedora: || $image =~ ^centos: ]]
 then
