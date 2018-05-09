@@ -1,16 +1,17 @@
 Name:           eccodes
-Version:        2.7.0
-Release:        2%{?dist}
+Version:        2.7.3
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
 %global so_version       0.1
 %global so_version_f90   0.1
 
-# latest rawhide grib_api version is 1.25.0-4
+# latest rawhide grib_api version is 1.26.1-1
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
-%global final_grib_api_version 1.25.0-4
+# latest upstream grib_api release is 1.26.1 (08-May-2018)
+%global final_grib_api_version 1.26.1-1
 
 # license remarks:
 # most of eccodes is licensed ASL 2.0 but some special cases must be noted.
@@ -36,6 +37,7 @@ URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
 # note: this data package is unversioned upstream but still it is updated
 # now and then. The current copy was downloaded 03-Jan-2018
+# (it was still the same on 08-May-2018)
 Source1:        http://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
@@ -96,13 +98,13 @@ Requires: %{name}-data = %{version}-%{release}
 Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
-ExcludeArch: i686
+#ExcludeArch: i686
 # as explained in bugzilla #1562071
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-ExcludeArch: s390x
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -138,7 +140,7 @@ and behaviour. A significant difference compared with GRIB-API tools is that
 bufr_dump produces output in JSON format suitable for many web based
 applications.
 
-
+#####################################################
 %package devel
 Summary:    Contains ecCodes development files
 Requires:   %{name}%{?_isa} = %{version}-%{release}
@@ -150,7 +152,7 @@ Obsoletes:  grib_api-devel < %{final_grib_api_version}
 %description devel
 Header files and libraries for ecCodes.
 
-# note: python3 is not yet supported by eccodes
+#####################################################
 %package -n python2-%{name}
 Summary:    A python2 interface to ecCodes
 Requires:   %{name}%{?_isa} = %{version}-%{release}
@@ -163,6 +165,10 @@ Requires:   jasper-devel%{?_isa}
 %description -n python2-%{name}
 A python2 interface to ecCodes. Also a legacy interface to gribapi is provided.
 
+#####################################################
+# note: python3 is not yet supported by eccodes
+
+#####################################################
 %package data
 Summary:    Data needed by the eccodes library and tools
 BuildArch:  noarch
@@ -173,6 +179,7 @@ to encode and decode grib and bufr files, and includes
 both the official WMO tables and a number of often used
 local definitions by ECMWF and other meteorological centers.
 
+#####################################################
 %package doc
 Summary:    Documentation and example code
 BuildArch:  noarch
@@ -185,6 +192,7 @@ This package contains the html documentation for ecCodes
 and a fair number of example programs and scripts to use it
 in C, Fortran 90, and Python.
 
+#####################################################
 %prep
 %autosetup -n %{name}-%{version}-Source -p1
 
@@ -345,6 +353,11 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Tue May 08 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.3-1
+- Upgrade to version 2.7.3
+- adjust latest grib_api version to 1.26.1-1
+- for now, try to disable ExcludeArch statements to see what happens
+
 * Thu Mar 29 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.0-2
 - added ExcludeArch statements for the failing architectures
 
