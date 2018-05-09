@@ -98,13 +98,13 @@ Requires: %{name}-data = %{version}-%{release}
 Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
-#ExcludeArch: i686
+ExcludeArch: i686
 # as explained in bugzilla #1562071
-#ExcludeArch: ppc64
+ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-#ExcludeArch: s390x
+ExcludeArch: s390x
 # as explained in bugzilla #1562084
-#ExcludeArch: armv7hl
+ExcludeArch: armv7hl
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -356,7 +356,6 @@ ctest -V %{?_smp_mflags}
 * Tue May 08 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.3-1
 - Upgrade to version 2.7.3
 - adjust latest grib_api version to 1.26.1-1
-- for now, try to disable ExcludeArch statements to see what happens
 
 * Thu Mar 29 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.0-2
 - added ExcludeArch statements for the failing architectures
