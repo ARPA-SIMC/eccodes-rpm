@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 2
+%global releaseno 1
 
 Name:           eccodes
 Version:        2.7.3
@@ -272,7 +272,7 @@ popd
 
 
 %changelog
-* Thu Jun 7 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.3-2
+* Thu Jun 7 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.3-1
 - Upstream update
 
 * Thu May 3 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-2
