@@ -7,7 +7,7 @@
 %global releaseno 2
 
 Name:           eccodes
-Version:        2.7.0
+Version:        2.7.3
 Release:        %{releaseno}%{?dist}
 Summary:        Application programming interface and a set of tools for decoding and encoding messages in GRIB, BUFR and GTS
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
@@ -272,6 +272,9 @@ popd
 
 
 %changelog
+* Thu Jun 7 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.3-2
+- Upstream update
+
 * Thu May 3 2018 Daniele Branchini <dbranchini@arpae.it> - 2.7.0-2
 - Moved fortran modules in the right dir
 
