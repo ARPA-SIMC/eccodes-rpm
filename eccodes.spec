@@ -1,5 +1,5 @@
 Name:           eccodes
-Version:        2.7.3
+Version:        2.8.0
 Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -14,30 +14,19 @@ Summary:        WMO data format decoding and encoding
 %global final_grib_api_version 1.26.1-1
 
 # license remarks:
-# most of eccodes is licensed ASL 2.0 but some special cases must be noted.
+# most of eccodes is licensed ASL 2.0 but a special case must be noted.
 # these 2 files:
 #     src/grib_yacc.c
 #     src/grib_yacc.h
 # contain a special exception clause that allows them to be
 # relicensed if they are included in a larger project
-# and these 3 files:
-#     src/grib_accessor_class_bufr_data_element.c
-#     src/grib_accessor_class_pack_bufr_values.c
-#     src/grib_accessor_class_unpack_bufr_values.c
-# are LGPL licensed.
-# It seems this is a mistake upstream.
-# I reported this at:
-#    https://software.ecmwf.int/issues/browse/SUP-2387
-#    (unfortunately this issue is not yet public)
-# and they confirm this, and have fixed this for their next release 2.8.0.
 
 License:        ASL 2.0
 
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
 # note: this data package is unversioned upstream but still it is updated
-# now and then. The current copy was downloaded 03-Jan-2018
-# (it was still the same on 08-May-2018)
+# now and then. The current copy was downloaded 05-Jul-2018
 Source1:        http://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
@@ -98,13 +87,13 @@ Requires: %{name}-data = %{version}-%{release}
 Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
-ExcludeArch: i686
+#ExcludeArch: i686
 # as explained in bugzilla #1562071
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-ExcludeArch: s390x
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -353,6 +342,9 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Jul 5 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.0-1
+- Upgrade to version 2.8.0
+
 * Tue May 08 2018 Jos de Kloe <josdekloe@gmail.com> - 2.7.3-1
 - Upgrade to version 2.7.3
 - adjust latest grib_api version to 1.26.1-1
