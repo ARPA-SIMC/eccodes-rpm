@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.8.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -345,6 +345,9 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Thu Jul 5 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.0-1
 - Upgrade to version 2.8.0
 
