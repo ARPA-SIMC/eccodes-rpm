@@ -290,10 +290,6 @@ cp examples/python/*.csv %{buildroot}%{_datadir}/doc/%{name}/examples/python
 sed -i -e 's/\/bin\/env python/\/usr\/bin\/python2/' \
     %{buildroot}%{_datadir}/doc/%{name}/examples/python/high_level_api.py
 
-# move the sample files into /usr/share/doc/eccodes
-mv %{buildroot}%{_datadir}/%{name}/ifs_samples/  %{buildroot}%{_datadir}/doc/%{name}/
-mv %{buildroot}%{_datadir}/%{name}/samples/ %{buildroot}%{_datadir}/doc/%{name}/
-
 # move cmake files to the cmake folder below libdir
 # as suggested in the review request
 mkdir -p %{buildroot}%{_libdir}/cmake/%{name}/
@@ -348,6 +344,8 @@ ctest -V %{?_smp_mflags}
 %files data
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/definitions/
+%{_datadir}/%{name}/samples/
+%{_datadir}/%{name}/ifs_samples/
 
 %files doc
 %doc %{_datadir}/doc/%{name}/
