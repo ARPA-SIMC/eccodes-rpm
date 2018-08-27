@@ -250,10 +250,10 @@ popd
 %{_libdir}/*.so.0*
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/definitions
+%{_datadir}/%{name}/ifs_samples/
+%{_datadir}/%{name}/samples/
 
 %files doc
-%doc %{_datadir}/%{name}/ifs_samples/
-%doc %{_datadir}/%{name}/samples/
 %doc html
 %doc examples
 
