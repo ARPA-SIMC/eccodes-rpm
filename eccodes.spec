@@ -162,7 +162,7 @@ pushd build
     -DENABLE_AEC=ON \
     -DENABLE_RPATHS=OFF \
     -DENABLE_RELATIVE_RPATHS=OFF \
-    -DENABLE_MEMFS=ON \
+    -DENABLE_MEMFS=OFF \
     -DHAVE_BIT_REPRODUCIBLE=ON \
     -DENABLE_EXAMPLES=OFF \
     -DENABLE_NETCDF=ON \
@@ -207,7 +207,7 @@ pushd build
 %{make_install}
 
 pushd %{buildroot}%{_libdir}
-for l in libeccodes.so libeccodes_f90.so libeccodes_memfs.so
+for l in libeccodes.so libeccodes_f90.so
 do
     mv $l $l.0.0.0
     ln -s $l.0.0.0 $l.0
