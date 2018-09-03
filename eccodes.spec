@@ -4,7 +4,7 @@
 %define python3_vers python3
 %endif
 
-%global releaseno 2
+%global releaseno 3
 
 Name:           eccodes
 Version:        2.7.3
@@ -127,7 +127,7 @@ pushd build
     -DENABLE_AEC=ON \
     -DENABLE_RPATHS=OFF \
     -DENABLE_RELATIVE_RPATHS=OFF \
-    -DENABLE_MEMFS=ON \
+    -DENABLE_MEMFS=OFF \
     -DHAVE_BIT_REPRODUCIBLE=ON \
     -DENABLE_EXAMPLES=OFF \
     -DENABLE_NETCDF=ON \
