@@ -1,6 +1,6 @@
 Name:           eccodes
-Version:        2.8.0
-Release:        3%{?dist}
+Version:        2.8.2
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -8,11 +8,11 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20180705
 
-# latest rawhide grib_api version is 1.26.1-1
+# latest rawhide grib_api version is 1.27.0-1
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
-# latest upstream grib_api release is 1.26.1 (08-May-2018)
-%global final_grib_api_version 1.26.1-1
+# latest upstream grib_api release is 1.27.0 (09-Sep-2018)
+%global final_grib_api_version 1.27.0-1
 
 # license remarks:
 # most of eccodes is licensed ASL 2.0 but a special case must be noted.
@@ -30,7 +30,7 @@ Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/ec
 # now and then. The current copy was downloaded 05-Jul-2018
 # todo: rename the datapack using the download date to make it versioned
 #       in fedora and figure out how to insert this in this Source1 entry
-Source1:        http://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
+Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
 # (unfortunately this issue is not public)
@@ -41,8 +41,7 @@ Patch2:         eccodes-soversion.patch
 # remove rpath from cmake/pkg-config.pc.in
 Patch3:         eccodes-rpath.patch
 # fix compile flags in fortran checks
-# https://software.ecmwf.int/issues/browse/SUP-1812
-# (unfortunately this issue is not public)
+# this is needed due to rpath removal
 Patch4:         eccodes-fortran-check.patch
 
 # note that the requests to make the other issues public are filed here:
@@ -90,13 +89,13 @@ Requires: %{name}-data = %{version}-%{release}
 Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
-ExcludeArch: i686
+#ExcludeArch: i686
 # as explained in bugzilla #1562071
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-ExcludeArch: s390x
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -159,6 +158,7 @@ A python2 interface to ecCodes. Also a legacy interface to gribapi is provided.
 
 #####################################################
 # note: python3 is not yet supported by eccodes
+#       but upstream intents to make it available before the end of 2018
 
 #####################################################
 %package data
@@ -343,6 +343,9 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Sun Sep 9 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-1
+- Upgrade to version 2.8.2
 
 * Fri Aug 17 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.0-3
 - rebuild with patch provided by Matthew Krupcale for f28
