@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.8.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -59,7 +59,7 @@ BuildRequires:  libpng-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  numpy
 BuildRequires:  openjpeg2-devel
-BuildRequires:  python2-devel
+# BuildRequires:  python2-devel
 
 # For tests
 BuildRequires:  perl(Getopt::Long)
@@ -109,7 +109,7 @@ in the following formats:
  *  WMO GTS abbreviated header (only decoding).
 
 A useful set of command line tools provide quick access to the messages. C,
-Fortran 90 and Python interfaces provide access to the main ecCodes
+Fortran 90 and Python (1) interfaces provide access to the main ecCodes
 functionality.
 
 ecCodes is an evolution of GRIB-API.  It is designed to provide the user with
@@ -118,7 +118,7 @@ approach.
 
 For GRIB encoding and decoding, the GRIB-API functionality is provided fully
 in ecCodes with only minor interface and behaviour changes. Interfaces for C,
-Fortran 90 and Python are all maintained as in GRIB-API.  However, the
+Fortran 90 and Python (1) are all maintained as in GRIB-API.  However, the
 GRIB-API Fortran 77 interface is no longer available.
 
 In addition, a new set of functions with the prefix "codes_" is provided to
@@ -133,6 +133,12 @@ and behaviour. A significant difference compared with GRIB-API tools is that
 bufr_dump produces output in JSON format suitable for many web based
 applications.
 
+(1) Note: for now only a python2 interface is provided by upstream,
+and since Fedora is phasing out python2 this interface has
+been removed from this package starting with Fedora 30.
+As soon as upstream provides a python3 interface that one will
+be added here.
+
 #####################################################
 %package devel
 Summary:    Contains ecCodes development files
@@ -146,17 +152,17 @@ Obsoletes:  grib_api-devel < %{final_grib_api_version}
 Header files and libraries for ecCodes.
 
 #####################################################
-%package -n python2-%{name}
-Summary:    A python2 interface to ecCodes
-Requires:   %{name}%{?_isa} = %{version}-%{release}
-Requires:   gcc-gfortran%{?_isa}
-Requires:   jasper-devel%{?_isa}
-
-# a sub package python2-grib_api did not exist
-# so no obsoletes needed here
-
-%description -n python2-%{name}
-A python2 interface to ecCodes. Also a legacy interface to gribapi is provided.
+#%%package -n python2-%%{name}
+#Summary:    A python2 interface to ecCodes
+#Requires:   %%{name}%%{?_isa} = %%{version}-%%{release}
+#Requires:   gcc-gfortran%%{?_isa}
+#Requires:   jasper-devel%%{?_isa}
+#
+## a sub package python2-grib_api did not exist
+## so no obsoletes needed here
+#
+#%%description -n python2-%%{name}
+#A python2 interface to ecCodes. Also a legacy interface to gribapi is provided.
 
 #####################################################
 # note: python3 is not yet supported by eccodes
@@ -184,7 +190,13 @@ BuildArch:  noarch
 %description doc
 This package contains the html documentation for ecCodes
 and a fair number of example programs and scripts to use it
-in C, Fortran 90, and Python.
+in C, Fortran 90, and Python (1).
+
+(1) Note: for now only a python2 interface is provided by upstream,
+and since Fedora is phasing out python2 this interface has
+been removed from this package starting with Fedora 30.
+As soon as upstream provides a python3 interface that one will
+be added here.
 
 #####################################################
 %prep
@@ -236,8 +248,8 @@ cd build
         -DCMAKE_SKIP_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DPYTHON_EXECUTABLE=%{_bindir}/python2 \
         ..
+#        -DPYTHON_EXECUTABLE=%%{_bindir}/python2 \
 
 %make_build
 
@@ -275,14 +287,14 @@ mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/C
 cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
-mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/python
-cp examples/python/*.py %{buildroot}%{_datadir}/doc/%{name}/examples/python
-cp examples/python/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/python
-cp examples/python/*.csv %{buildroot}%{_datadir}/doc/%{name}/examples/python
+#mkdir -p %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
+#cp examples/python/*.py %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
+#cp examples/python/*.c %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
+#cp examples/python/*.csv %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
 
 # adapt a shebang to make it point explicitely to python2
-sed -i -e 's/\/bin\/env python/\/usr\/bin\/python2/' \
-    %{buildroot}%{_datadir}/doc/%{name}/examples/python/high_level_api.py
+#sed -i -e 's/\/bin\/env python/\/usr\/bin\/python2/' \
+#    %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python/high_level_api.py
 
 # move cmake files to the cmake folder below libdir
 # as suggested in the review request
@@ -320,10 +332,10 @@ ctest -V %{?_smp_mflags}
 %{_bindir}/*
 %{_libdir}/*.so.*
 
-%files -n python2-%{name}
-%{python2_sitearch}/%{name}
-%{python2_sitearch}/%{name}-*-py*.egg-info
-%{python2_sitearch}/gribapi
+#%%files -n python2-%%{name}
+#%%{python2_sitearch}/%%{name}
+#%%{python2_sitearch}/%%{name}-*-py*.egg-info
+#%%{python2_sitearch}/gribapi
 
 %files devel
 %{_includedir}/*
@@ -345,6 +357,9 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Thu Sep 13 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-2
+- Remove python2 sub-package as per Mass Python 2 Package Removal for f30
 
 * Sun Sep 9 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-1
 - Upgrade to version 2.8.2
