@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.8.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -366,6 +366,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Sat Sep 15 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-4
+- add Excludearch for aarch64 on epel7
 
 * Sat Sep 15 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-3
 - Explicitely disable python in cmake call and use ctest3 rather than ctest
