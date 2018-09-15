@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.8.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -248,6 +248,7 @@ cd build
         -DCMAKE_SKIP_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
+        -DENABLE_PYTHON=OFF \
         ..
 #        -DPYTHON_EXECUTABLE=%%{_bindir}/python2 \
 
@@ -324,7 +325,7 @@ cd build
 # (unfortunately this issue is not public)
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -V %{?_smp_mflags}
+ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
@@ -357,6 +358,10 @@ ctest -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Sat Sep 15 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-3
+- Explicitely disable python in cmake call and use ctest3 rather than ctest
+  to ensure the build runs on EPEL-7 as well
 
 * Thu Sep 13 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-2
 - Remove python2 sub-package as per Mass Python 2 Package Removal for f30
