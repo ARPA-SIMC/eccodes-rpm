@@ -93,11 +93,19 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 ExcludeArch: i686
 # as explained in bugzilla #1562071
 #  note: this is no longer part of fc30/rawhide
-#ExcludeArch: ppc64
+#  but the exclude is still needed for EPEL-7
+ExcludeArch: ppc64
 # as explained in bugzilla #1562076
 ExcludeArch: s390x
 # as explained in bugzilla #1562084
 ExcludeArch: armv7hl
+
+%if 0%{?rhel} >= 7
+%ifarch aarch64
+# as explained in bugzilla #1629377
+ExcludeArch: aarch64
+%endif
+%endif
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
