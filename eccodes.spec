@@ -101,10 +101,8 @@ ExcludeArch: s390x
 ExcludeArch: armv7hl
 
 %if 0%{?rhel} >= 7
-%ifarch aarch64
 # as explained in bugzilla #1629377
 ExcludeArch: aarch64
-%endif
 %endif
 
 %description
