@@ -1,18 +1,18 @@
 Name:           eccodes
-Version:        2.8.2
-Release:        4%{?dist}
+Version:        2.9.0
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
 %global so_version       0.1
 %global so_version_f90   0.1
-%global datapack_date    20180705
+%global datapack_date    20181010
 
-# latest rawhide grib_api version is 1.27.0-1
+# latest rawhide grib_api version is 1.27.0-2
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.27.0 (09-Sep-2018)
-%global final_grib_api_version 1.27.0-1
+%global final_grib_api_version 1.27.0-2
 
 # license remarks:
 # most of eccodes is licensed ASL 2.0 but a special case must be noted.
@@ -27,11 +27,9 @@ License:        ASL 2.0
 URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
 # note: this data package is unversioned upstream but still it is updated
-# now and then. The current copy was downloaded 05-Jul-2018
-# todo: rename the datapack using the download date to make it versioned
-#       in fedora and figure out how to insert this in this Source1 entry
-#       (next time it changes)
-Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz
+# now and then so rename the datapack using the download date
+# to make it versioned in fedora
+Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
 # (unfortunately this issue is not public)
@@ -364,6 +362,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Sun Oct 7 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.0-1
+- Upgrade to upstream version 2.9.0
 
 * Sat Sep 15 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.2-4
 - add Excludearch for aarch64 on epel7
