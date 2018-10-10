@@ -87,16 +87,16 @@ Requires: %{name}-data = %{version}-%{release}
 
 Obsoletes:      grib_api < %{final_grib_api_version}
 
-# as explained in bugzilla #1562066
-ExcludeArch: i686
-# as explained in bugzilla #1562071
-#  note: this is no longer part of fc30/rawhide
-#  but the exclude is still needed for EPEL-7
-ExcludeArch: ppc64
-# as explained in bugzilla #1562076
-ExcludeArch: s390x
-# as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+## as explained in bugzilla #1562066
+#ExcludeArch: i686
+## as explained in bugzilla #1562071
+##  note: this is no longer part of fc30/rawhide
+##  but the exclude is still needed for EPEL-7
+#ExcludeArch: ppc64
+## as explained in bugzilla #1562076
+#ExcludeArch: s390x
+## as explained in bugzilla #1562084
+#ExcludeArch: armv7hl
 
 %if 0%{?rhel} >= 7
 # as explained in bugzilla #1629377
