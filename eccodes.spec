@@ -32,7 +32,9 @@ Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/ec
 # now and then. The current copy was downloaded 05-Jul-2018
 # todo: rename the datapack using the download date to make it versioned
 #       in fedora and figure out how to insert this in this Source1 entry
-Source1:        http://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
+#Source1:        https://download.ecmwf.org/test-data/grib_api/eccodes_test_data.tar.gz
+# http protocol disabled in copr
+Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
 # (unfortunately this issue is not public)
