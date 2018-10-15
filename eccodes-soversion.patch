@@ -1,0 +1,25 @@
+--- eccodes-2.7.0-Source.orig/fortran/CMakeLists.txt	2018-03-02 10:52:20.000000000 +0100
++++ eccodes-2.7.0-Source/fortran/CMakeLists.txt	2018-03-10 10:16:43.847822505 +0100
+@@ -43,7 +43,8 @@ if( HAVE_FORTRAN )
+     ecbuild_add_library( TARGET     eccodes_f90
+                          SOURCES    grib_fortran.c grib_f90.f90 eccodes_f90.f90 grib_kinds.h
+                          GENERATED  grib_f90.f90 eccodes_f90.f90
+-                         LIBS       eccodes )
++                         LIBS       eccodes
++                         SOVERSION  ${ECCODES_SOVERSION_F90})
+     add_custom_command( TARGET     eccodes_f90 POST_BUILD
+                         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include
+                         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/eccodes.mod ${CMAKE_BINARY_DIR}/include
+--- eccodes-2.7.0-Source.orig/src/CMakeLists.txt	2018-03-02 10:52:20.000000000 +0100
++++ eccodes-2.7.0-Source/src/CMakeLists.txt	2018-03-10 10:16:43.848822480 +0100
+@@ -435,8 +435,8 @@ ecbuild_add_library(TARGET    eccodes
+                              ${grib_api_srcs}
+                     GENERATED grib_api_version.c
+                     LIBS      ${ECCODES_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${CMATH_LIBRARIES}
+-                    TEMPLATES ${grib_api_extra_srcs})
+-
++                    TEMPLATES ${grib_api_extra_srcs}
++                    SOVERSION ${ECCODES_SOVERSION})
+ 
+ install( FILES grib_api.h eccodes.h eccodes_windef.h DESTINATION ${INSTALL_INCLUDE_DIR} )
+ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/eccodes_version.h DESTINATION ${INSTALL_INCLUDE_DIR} )
