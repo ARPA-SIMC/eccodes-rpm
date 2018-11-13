@@ -3,6 +3,8 @@
 [![Build Status](https://badges.herokuapp.com/travis/ARPA-SIMC/eccodes-rpm?branch=master&env=DOCKER_IMAGE=centos:7&label=centos7)](https://travis-ci.org/ARPA-SIMC/eccodes-rpm)
 [![Build Status](https://badges.herokuapp.com/travis/ARPA-SIMC/eccodes-rpm?branch=master&env=DOCKER_IMAGE=fedora:27&label=fedora27)](https://travis-ci.org/ARPA-SIMC/eccodes-rpm)
 
+[![Build Status](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/)
+
 Note: Fedora 28 (and later) builds have been disabled since eccodes it's available in the official repository: https://src.fedoraproject.org/rpms/eccodes
 
 ## Introduction
