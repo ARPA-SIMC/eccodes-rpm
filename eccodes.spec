@@ -1,4 +1,4 @@
-%global releaseno 3
+%global releaseno 4
 
 Name:           eccodes
 Version:        2.8.0
@@ -152,8 +152,6 @@ Header files and libraries for ecCodes.
 %package -n python2-%{name}
 Summary:    A python2 interface to ecCodes
 Requires:   %{name}%{?_isa} = %{version}-%{release}
-Requires:   gcc-gfortran%{?_isa}
-Requires:   jasper-devel%{?_isa}
 
 # a sub package python2-grib_api did not exist
 # so no obsoletes needed here
@@ -348,6 +346,8 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Tue Nov 13 2018 Daniele Branchini <dbranchini@arpae.it> - 2.8.0-4
+- removed devel packages requirements for python2 package (fix #6)
 
 * Fri Aug 17 2018 Jos de Kloe <josdekloe@gmail.com> - 2.8.0-3
 - rebuild with patch provided by Matthew Krupcale for f28
