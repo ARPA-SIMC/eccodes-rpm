@@ -1,5 +1,5 @@
 Name:           eccodes
-Version:        2.9.0
+Version:        2.9.2
 Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -88,15 +88,15 @@ Requires: %{name}-data = %{version}-%{release}
 Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
-ExcludeArch: i686
+#ExcludeArch: i686
 # as explained in bugzilla #1562071
 #  note: this is no longer part of fc30/rawhide
 #  but the exclude is still needed for EPEL-7
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-ExcludeArch: s390x
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
 
 %if 0%{?rhel} >= 7
 # as explained in bugzilla #1629377
@@ -362,6 +362,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+
+* Sat Nov 24 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.2-1
+- Upgrade to upstream version 2.9.2
 
 * Sun Oct 7 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.0-1
 - Upgrade to upstream version 2.9.0
