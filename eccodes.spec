@@ -1,6 +1,6 @@
 Name:           eccodes
-Version:        2.9.2
-Release:        2%{?dist}
+Version:        2.12.0
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -39,9 +39,11 @@ Patch1:         eccodes-32bit.patch
 Patch2:         eccodes-soversion.patch
 # remove rpath from cmake/pkg-config.pc.in
 Patch3:         eccodes-rpath.patch
+
+# disabled
 # fix compile flags in fortran checks
 # this is needed due to rpath removal
-Patch4:         eccodes-fortran-check.patch
+#Patch4:         eccodes-fortran-check.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
@@ -87,16 +89,17 @@ Requires: %{name}-data = %{version}-%{release}
 
 Obsoletes:      grib_api < %{final_grib_api_version}
 
+# disabled for my first scratch build as usual, to see what happens
 # as explained in bugzilla #1562066
-ExcludeArch: i686
+#ExcludeArch: i686
 # as explained in bugzilla #1562071
 #  note: this is no longer part of fc30/rawhide
 #  but the exclude is still needed for EPEL-7
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-ExcludeArch: s390x
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
 
 %if 0%{?rhel} >= 7
 # as explained in bugzilla #1629377
@@ -137,11 +140,9 @@ and behaviour. A significant difference compared with GRIB-API tools is that
 bufr_dump produces output in JSON format suitable for many web based
 applications.
 
-(1) Note: for now only a python2 interface is provided by upstream,
-and since Fedora is phasing out python2 this interface has
-been removed from this package starting with Fedora 30.
-As soon as upstream provides a python3 interface that one will
-be added here.
+(1) Note: the python3 interface is provided by upstream,
+but it fails unittesting, so it has been disabled for now.
+As soon as this is fixed by upstream it will be added here.
 
 #####################################################
 %package devel
@@ -196,11 +197,9 @@ This package contains the html documentation for ecCodes
 and a fair number of example programs and scripts to use it
 in C, Fortran 90, and Python (1).
 
-(1) Note: for now only a python2 interface is provided by upstream,
-and since Fedora is phasing out python2 this interface has
-been removed from this package starting with Fedora 30.
-As soon as upstream provides a python3 interface that one will
-be added here.
+(1) Note: the python3 interface is provided by upstream,
+but it fails unittesting, so it has been disabled for now.
+As soon as this is fixed by upstream it will be added here.
 
 #####################################################
 %prep
@@ -333,7 +332,7 @@ ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
-%doc README ChangeLog AUTHORS
+%doc README.md ChangeLog AUTHORS NEWS NOTICE
 %{_bindir}/*
 %{_libdir}/*.so.*
 
@@ -362,9 +361,11 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Sun Feb 17 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-1
+- Upgrade to upstream version 2.12.0
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
 
 * Sat Nov 24 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.2-1
 - Upgrade to upstream version 2.9.2
