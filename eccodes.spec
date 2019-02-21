@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -8,11 +8,17 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20181010
 
-# latest rawhide grib_api version is 1.27.0-2
+# latest rawhide grib_api version is 1.27.0-3
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.27.0 (09-Sep-2018)
-%global final_grib_api_version 1.27.0-2
+%global final_grib_api_version 1.27.1-1%{?dist}
+
+%ifarch i686 ppc64 s390x armv7hl
+  %global obsolete_grib_api 0
+%else
+  %global obsolete_grib_api 1
+%endif
 
 # license remarks:
 # most of eccodes is licensed ASL 2.0 but a special case must be noted.
@@ -87,7 +93,10 @@ Requires: %{name}-data = %{version}-%{release}
 # "Please note that GRIB-API support is being discontinued at the end of 2018."
 # So the old grib_api will need to be obsoleted.
 
+%if 0%{obsolete_grib_api}
+Provides:       grib_api = %{final_grib_api_version}
 Obsoletes:      grib_api < %{final_grib_api_version}
+%endif
 
 # as explained in bugzilla #1562066
 ExcludeArch: i686
@@ -150,7 +159,10 @@ Requires:   %{name}%{?_isa} = %{version}-%{release}
 Requires:   gcc-gfortran%{?_isa}
 Requires:   jasper-devel%{?_isa}
 
+%if 0%{obsolete_grib_api}
+Provides:   grib_api-devel = %{final_grib_api_version}
 Obsoletes:  grib_api-devel < %{final_grib_api_version}
+%endif
 
 %description devel
 Header files and libraries for ecCodes.
@@ -360,6 +372,11 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Feb 21 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-2
+- bump final_grib_api_version global variable to 1.27.1, so just above the
+  actual final version, to prevent the obsoletes to be disabled if the release
+  gets bumped. See BZ #1677968
+
 * Sun Feb 17 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-1
 - Upgrade to upstream version 2.12.0
 
