@@ -1,6 +1,6 @@
 Name:           eccodes
 Version:        2.12.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -372,6 +372,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Mon Mar 18 2019 Orion Poplawski <orion@nwra.com> - 2.12.0-3
+- Rebuild for netcdf 4.6.3
+
 * Thu Feb 21 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-2
 - bump final_grib_api_version global variable to 1.27.1, so just above the
   actual final version, to prevent the obsoletes to be disabled if the release
