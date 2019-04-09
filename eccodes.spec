@@ -1,7 +1,10 @@
-%global releaseno 1
+# adapted from:
+# https://src.fedoraproject.org/rpms/eccodes/blob/f30/f/eccodes.spec
+
+%global releaseno 2
 
 Name:           eccodes
-Version:        2.9.2
+Version:        2.12.0
 Release:        %{releaseno}%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -10,11 +13,11 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20181010
 
-# latest rawhide grib_api version is 1.27.0-2
+# latest rawhide grib_api version is 1.27.0-3
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.27.0 (09-Sep-2018)
-%global final_grib_api_version 1.27.0-2
+%global final_grib_api_version 1.27.1-1%{?dist}
 
 # license remarks:
 # most of eccodes is licensed ASL 2.0 but a special case must be noted.
@@ -43,9 +46,11 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 # remove rpath from cmake/pkg-config.pc.in
 Patch3:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-rpath.patch
+
+# disabled
 # fix compile flags in fortran checks
 # this is needed due to rpath removal
-Patch4:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-fortran-check.patch
+#Patch4:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-fortran-check.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
@@ -141,11 +146,9 @@ and behaviour. A significant difference compared with GRIB-API tools is that
 bufr_dump produces output in JSON format suitable for many web based
 applications.
 
-(1) Note: for now only a python2 interface is provided by upstream,
-and since Fedora is phasing out python2 this interface has
-been removed from this package starting with Fedora 30.
-As soon as upstream provides a python3 interface that one will
-be added here.
+(1) Note: the python3 interface is provided by upstream,
+but it fails unittesting, so it has been disabled for now.
+As soon as this is fixed by upstream it will be added here.
 
 #####################################################
 %package devel
@@ -200,11 +203,9 @@ This package contains the html documentation for ecCodes
 and a fair number of example programs and scripts to use it
 in C, Fortran 90, and Python (1).
 
-(1) Note: for now only a python2 interface is provided by upstream,
-and since Fedora is phasing out python2 this interface has
-been removed from this package starting with Fedora 30.
-As soon as upstream provides a python3 interface that one will
-be added here.
+(1) Note: the python3 interface is provided by upstream,
+but it fails unittesting, so it has been disabled for now.
+As soon as this is fixed by upstream it will be added here.
 
 #####################################################
 %prep
@@ -338,7 +339,7 @@ ctest3 %{?_smp_mflags}
 
 %files
 %license LICENSE
-%doc README ChangeLog AUTHORS
+%doc README.md ChangeLog AUTHORS NEWS NOTICE
 %{_bindir}/*
 %{_libdir}/*.so.*
 
@@ -367,6 +368,16 @@ ctest3 %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Feb 21 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-2
+- bump final_grib_api_version global variable to 1.27.1, so just above the
+  actual final version, to prevent the obsoletes to be disabled if the release
+  gets bumped. See BZ #1677968
+
+* Sun Feb 17 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-1
+- Upgrade to upstream version 2.12.0
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
 * Sat Nov 24 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.2-1
 - Upgrade to upstream version 2.9.2
