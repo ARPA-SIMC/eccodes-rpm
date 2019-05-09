@@ -1,6 +1,6 @@
 Name:           eccodes
-Version:        2.12.0
-Release:        3%{?dist}
+Version:        2.12.5
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -149,7 +149,7 @@ bufr_dump produces output in JSON format suitable for many web based
 applications.
 
 (1) Note: the python3 interface is provided by upstream,
-but it fails unittesting, so it has been disabled for now.
+but it fails unit testing, so it has been disabled for now.
 As soon as this is fixed by upstream it will be added here.
 
 #####################################################
@@ -372,6 +372,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu May 09 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.5-1
+- Upgrade to upstream version 2.12.5
+
 * Mon Mar 18 2019 Orion Poplawski <orion@nwra.com> - 2.12.0-3
 - Rebuild for netcdf 4.6.3
 

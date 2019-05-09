@@ -1,5 +1,5 @@
---- eccodes-2.12.0-Source.orig/fortran/CMakeLists.txt	2019-02-15 10:44:55.000000000 +0100
-+++ eccodes-2.12.0-Source/fortran/CMakeLists.txt	2019-02-17 17:16:23.108599099 +0100
+--- eccodes-2.12.5-Source.orig/fortran/CMakeLists.txt	2019-05-09 16:24:38.000000000 +0200
++++ eccodes-2.12.5-Source/fortran/CMakeLists.txt	2019-05-09 20:11:14.481649037 +0200
 @@ -43,7 +43,8 @@ if( HAVE_FORTRAN )
      ecbuild_add_library( TARGET     eccodes_f90
                           SOURCES    grib_fortran.c grib_f90.f90 eccodes_f90.f90 grib_kinds.h
@@ -10,8 +10,8 @@
      add_custom_command( TARGET     eccodes_f90 POST_BUILD
                          COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/include
                          COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_Fortran_MODULE_DIRECTORY}/${CMAKE_CFG_INTDIR}/eccodes.mod ${CMAKE_BINARY_DIR}/include
---- eccodes-2.12.0-Source.orig/src/CMakeLists.txt	2019-02-15 10:44:55.000000000 +0100
-+++ eccodes-2.12.0-Source/src/CMakeLists.txt	2019-02-17 17:16:23.109599073 +0100
+--- eccodes-2.12.5-Source.orig/src/CMakeLists.txt	2019-05-09 16:24:38.000000000 +0200
++++ eccodes-2.12.5-Source/src/CMakeLists.txt	2019-05-09 20:11:14.481649037 +0200
 @@ -436,8 +436,8 @@ ecbuild_add_library(TARGET    eccodes
                               ${grib_api_srcs}
                      GENERATED grib_api_version.c
