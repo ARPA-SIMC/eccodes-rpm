@@ -1,5 +1,5 @@
---- eccodes-2.12.0-Source.orig/cmake/pkg-config.pc.in	2019-02-15 10:44:50.000000000 +0100
-+++ eccodes-2.12.0-Source/cmake/pkg-config.pc.in	2019-02-17 17:16:25.490537820 +0100
+--- eccodes-2.12.5-Source.orig/cmake/pkg-config.pc.in	2019-05-09 16:24:31.000000000 +0200
++++ eccodes-2.12.5-Source/cmake/pkg-config.pc.in	2019-05-09 20:11:22.754434973 +0200
 @@ -14,9 +14,7 @@ CC=@CMAKE_C_COMPILER@
  CXX=@CMAKE_CXX_COMPILER@
  FC=@CMAKE_Fortran_COMPILER@

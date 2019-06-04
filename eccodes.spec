@@ -1,10 +1,10 @@
 # adapted from:
 # https://src.fedoraproject.org/rpms/eccodes/blob/f30/f/eccodes.spec
 
-%global releaseno 2
+%global releaseno 1
 
 Name:           eccodes
-Version:        2.12.0
+Version:        2.12.5
 Release:        %{releaseno}%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -147,7 +147,7 @@ bufr_dump produces output in JSON format suitable for many web based
 applications.
 
 (1) Note: the python3 interface is provided by upstream,
-but it fails unittesting, so it has been disabled for now.
+but it fails unit testing, so it has been disabled for now.
 As soon as this is fixed by upstream it will be added here.
 
 #####################################################
@@ -368,6 +368,12 @@ ctest3 %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu May 09 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.5-1
+- Upgrade to upstream version 2.12.5
+
+* Mon Mar 18 2019 Orion Poplawski <orion@nwra.com> - 2.12.0-3
+- Rebuild for netcdf 4.6.3
+
 * Thu Feb 21 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-2
 - bump final_grib_api_version global variable to 1.27.1, so just above the
   actual final version, to prevent the obsoletes to be disabled if the release
