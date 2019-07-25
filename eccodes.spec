@@ -286,10 +286,14 @@ cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 
-# it seems pkgconfig files end up in lib in stead of lib64 now
-# so move them to the right place
-mv %{buildroot}/%{_usr}/lib/pkgconfig/ \
-   %{buildroot}/%{_libdir}/pkgconfig/
+%ifarch i686
+  # pass
+%else
+  # it seems pkgconfig files end up in lib in stead of lib64 now
+  # so move them to the right place
+  mv %{buildroot}/%{_usr}/lib/pkgconfig/ \
+     %{buildroot}/%{_libdir}/pkgconfig/
+%endif
 
 # It seems the cmake options
 # -DCMAKE_SKIP_RPATH=TRUE
