@@ -286,8 +286,8 @@ cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 
-%ifarch i686
-  # pass
+%ifarch i686 armv7hl
+  # pass (nothing to do)
 %else
   # it seems pkgconfig files end up in lib in stead of lib64 now
   # so move them to the right place
