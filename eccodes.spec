@@ -342,7 +342,7 @@ echo "output for: ctest -debug -R \"eccodes_t_ieee|eccodes_t_grib_optimize_scali
 echo "================================="
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -debug -R "eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh"
+ctest -VV -debug -R "eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh"
 
 %files
 %license LICENSE
