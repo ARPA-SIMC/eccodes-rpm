@@ -91,15 +91,15 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 %endif
 
 # as explained in bugzilla #1562066
-#ExcludeArch: i686
+ExcludeArch: i686
 # as explained in bugzilla #1562071
 #  note: this is no longer part of fc30/rawhide
 #  but the exclude is still needed for EPEL-7
 #ExcludeArch: ppc64
 # as explained in bugzilla #1562076
-#ExcludeArch: s390x
+ExcludeArch: s390x
 # as explained in bugzilla #1562084
-#ExcludeArch: armv7hl
+ExcludeArch: armv7hl
 
 %if 0%{?rhel} >= 7
 # as explained in bugzilla #1629377
@@ -332,17 +332,7 @@ cd build
 #LD_LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
 #LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
 
-#ctest3 -V %{?_smp_mflags}
-
-# manually run some problematic tests for s390x:
-echo "================================="
-echo "================================="
-echo "================================="
-echo "output for: ctest -VV -debug -R \"eccodes_t_bufr_dump_encode_filter|eccodes_t_bufrdc_ref|eccodes_t_bufr_filter|eccodes_t_bufr_ecc-875|eccodes_t_gts_get|eccodes_t_gts_ls|eccodes_t_gts_count|eccodes_t_gts_compare|eccodes_t_metar_ls|eccodes_t_metar_get|eccodes_t_metar_dump|eccodes_t_metar_compare|eccodes_t_grib_sh_ieee64|eccodes_t_grib_lam_bf\""
-echo "================================="
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -VV -debug -R "eccodes_t_bufr_dump_encode_filter|eccodes_t_bufrdc_ref|eccodes_t_bufr_filter|eccodes_t_bufr_ecc-875|eccodes_t_gts_get|eccodes_t_gts_ls|eccodes_t_gts_count|eccodes_t_gts_compare|eccodes_t_metar_ls|eccodes_t_metar_get|eccodes_t_metar_dump|eccodes_t_metar_compare|eccodes_t_grib_sh_ieee64|eccodes_t_grib_lam_bf"
+ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
