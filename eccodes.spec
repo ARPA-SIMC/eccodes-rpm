@@ -332,7 +332,17 @@ cd build
 #LD_LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
 #LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
 
-ctest3 -V %{?_smp_mflags}
+#ctest3 -V %{?_smp_mflags}
+
+# manually run some problematic tests for s390x:
+echo "================================="
+echo "================================="
+echo "================================="
+echo "output for: ctest -debug -R \"eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh\""
+echo "================================="
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+LIBRARY_PATH=%{buildroot}/%{_libdir} \
+ctest -debug -R "eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh"
 
 %files
 %license LICENSE
