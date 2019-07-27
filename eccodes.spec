@@ -338,11 +338,11 @@ cd build
 echo "================================="
 echo "================================="
 echo "================================="
-echo "output for: ctest -debug -R \"eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh\""
+echo "output for: ctest -VV -debug -R \"eccodes_t_bufr_dump_encode_filter|eccodes_t_bufrdc_ref|eccodes_t_bufr_filter|eccodes_t_bufr_ecc-875|eccodes_t_gts_get|eccodes_t_gts_ls|eccodes_t_gts_count|eccodes_t_gts_compare|eccodes_t_metar_ls|eccodes_t_metar_get|eccodes_t_metar_dump|eccodes_t_metar_compare|eccodes_t_grib_sh_ieee64|eccodes_t_grib_lam_bf\""
 echo "================================="
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest -VV -debug -R "eccodes_t_ieee|eccodes_t_grib_optimize_scaling_sh"
+ctest -VV -debug -R "eccodes_t_bufr_dump_encode_filter|eccodes_t_bufrdc_ref|eccodes_t_bufr_filter|eccodes_t_bufr_ecc-875|eccodes_t_gts_get|eccodes_t_gts_ls|eccodes_t_gts_count|eccodes_t_gts_compare|eccodes_t_metar_ls|eccodes_t_metar_get|eccodes_t_metar_dump|eccodes_t_metar_compare|eccodes_t_grib_sh_ieee64|eccodes_t_grib_lam_bf"
 
 %files
 %license LICENSE
