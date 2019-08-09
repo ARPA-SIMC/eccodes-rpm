@@ -301,11 +301,8 @@ cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 # have no effect on the generated *.pc files.
 # These still contain an rpath reference, so patch them and remove 
 # the rpath using sed
-for pcfile in %{buildroot}/%{_libdir}/pkgconfig/*.pc ; do \
-  mv $pcfile $pcfile.orig; \
-  cat $pcfile.orig | sed 's|,-rpath,|,|g' > $pcfile ; \
-  rm $pcfile.orig; \
-done
+sed -i "s|^libs=.*$|libs=-L\${libdir} -leccodes|g" %{buildroot}/%{_libdir}/pkgconfig/eccodes.pc
+sed -i "s|^libs=.*$|libs=-L\${libdir} -leccodes_f90 -leccodes|g" %{buildroot}/%{_libdir}/pkgconfig/eccodes_f90.pc
 
 %ldconfig_scriptlets
 
