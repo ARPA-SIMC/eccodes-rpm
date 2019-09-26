@@ -3,7 +3,7 @@ set -exo pipefail
 
 image=$1
 
-if [[ $image =~ ^centos: ]]
+if [[ $image =~ ^centos:7 ]]
 then
     pkgcmd="yum"
     builddep="yum-builddep"
@@ -14,6 +14,15 @@ then
     yum install -q -y git
     yum install -q -y rpmdevtools
     yum install -q -y pv
+elif [[ $image =~ ^centos:8 ]]
+    pkgcmd="dnf"
+    builddep="dnf builddep"
+    sed -i '/^tsflags=/d' /etc/dnf/dnf.conf
+    dnf install groupinstall -q -y "Development Tools"
+    dnf install -q -y 'dnf-command(builddep)'
+    dnf install -q -y git
+    dnf install -q -y rpmdevtools
+    dnf install -q -y pv
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
