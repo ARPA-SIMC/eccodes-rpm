@@ -15,6 +15,7 @@ then
     yum install -q -y rpmdevtools
     yum install -q -y pv
 elif [[ $image =~ ^centos:8 ]]
+then
     pkgcmd="dnf"
     builddep="dnf builddep"
     sed -i '/^tsflags=/d' /etc/dnf/dnf.conf
