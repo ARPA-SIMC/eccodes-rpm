@@ -1,10 +1,10 @@
 # adapted from:
 # https://src.fedoraproject.org/rpms/eccodes/blob/f30/f/eccodes.spec
 
-%global releaseno 1
+%global releaseno 2
 
 Name:           eccodes
-Version:        2.12.5
+Version:        2.13.0
 Release:        %{releaseno}%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -13,15 +13,17 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20181010
 
-# latest rawhide grib_api version is 1.27.0-3
+# latest rawhide grib_api version is 1.27.0-4
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
-# latest upstream grib_api release is 1.27.0 (09-Sep-2018)
-%global final_grib_api_version 1.27.1-1%{?dist}
+# latest upstream grib_api release is 1.28.0 (05-Dec-2018)
+# see https://confluence.ecmwf.int/display/GRIB/Home
+%global final_grib_api_version 1.28.1-1%{?dist}
+
 
 # license remarks:
-# most of eccodes is licensed ASL 2.0 but a special case must be noted.
-# these 2 files:
+# Most of eccodes is licensed ASL 2.0 but a special case must be noted.
+# These 2 files:
 #     src/grib_yacc.c
 #     src/grib_yacc.h
 # contain a special exception clause that allows them to be
@@ -44,13 +46,6 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://software.ecmwf.int/issues/browse/SUP-1809
 Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
-# remove rpath from cmake/pkg-config.pc.in
-Patch3:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-rpath.patch
-
-# disabled
-# fix compile flags in fortran checks
-# this is needed due to rpath removal
-#Patch4:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-fortran-check.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
@@ -66,14 +61,13 @@ BuildRequires:  libpng-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  numpy
 BuildRequires:  openjpeg2-devel
-# BuildRequires:  python2-devel
 
 # For tests
 BuildRequires:  perl(Getopt::Long)
 BuildRequires:  perl(Test::More)
 
 # the data is needed by the library and all tools provided in the main package
-# the other way arpund, the data package could be installed without
+# the other way around, the data package could be installed without
 # installing the base package. It will probably be pretty useless,
 # unless a user wishes to read and study all these grib and bufr
 # file format definitions.
@@ -101,7 +95,7 @@ ExcludeArch: i686
 # as explained in bugzilla #1562071
 #  note: this is no longer part of fc30/rawhide
 #  but the exclude is still needed for EPEL-7
-ExcludeArch: ppc64
+#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
 ExcludeArch: s390x
 # as explained in bugzilla #1562084
@@ -122,8 +116,7 @@ in the following formats:
  *  WMO GTS abbreviated header (only decoding).
 
 A useful set of command line tools provide quick access to the messages. C,
-Fortran 90 and Python (1) interfaces provide access to the main ecCodes
-functionality.
+and Fortran 90 interfaces provide access to the main ecCodes functionality.
 
 ecCodes is an evolution of GRIB-API.  It is designed to provide the user with
 a simple set of functions to access data from several formats with a key/value
@@ -131,7 +124,7 @@ approach.
 
 For GRIB encoding and decoding, the GRIB-API functionality is provided fully
 in ecCodes with only minor interface and behaviour changes. Interfaces for C,
-Fortran 90 and Python (1) are all maintained as in GRIB-API.  However, the
+and Fortran 90 are all maintained as in GRIB-API.  However, the
 GRIB-API Fortran 77 interface is no longer available.
 
 In addition, a new set of functions with the prefix "codes_" is provided to
@@ -146,10 +139,6 @@ and behaviour. A significant difference compared with GRIB-API tools is that
 bufr_dump produces output in JSON format suitable for many web based
 applications.
 
-(1) Note: the python3 interface is provided by upstream,
-but it fails unit testing, so it has been disabled for now.
-As soon as this is fixed by upstream it will be added here.
-
 #####################################################
 %package devel
 Summary:    Contains ecCodes development files
@@ -161,23 +150,6 @@ Obsoletes:  grib_api-devel < %{final_grib_api_version}
 
 %description devel
 Header files and libraries for ecCodes.
-
-#####################################################
-#%%package -n python2-%%{name}
-#Summary:    A python2 interface to ecCodes
-#Requires:   %%{name}%%{?_isa} = %%{version}-%%{release}
-#Requires:   gcc-gfortran%%{?_isa}
-#Requires:   jasper-devel%%{?_isa}
-#
-## a sub package python2-grib_api did not exist
-## so no obsoletes needed here
-#
-#%%description -n python2-%%{name}
-#A python2 interface to ecCodes. Also a legacy interface to gribapi is provided.
-
-#####################################################
-# note: python3 is not yet supported by eccodes
-#       but upstream intents to make it available before the end of 2018
 
 #####################################################
 %package data
@@ -201,11 +173,7 @@ BuildArch:  noarch
 %description doc
 This package contains the html documentation for ecCodes
 and a fair number of example programs and scripts to use it
-in C, Fortran 90, and Python (1).
-
-(1) Note: the python3 interface is provided by upstream,
-but it fails unittesting, so it has been disabled for now.
-As soon as this is fixed by upstream it will be added here.
+in C, and Fortran 90.
 
 #####################################################
 %prep
@@ -241,26 +209,43 @@ cd build
 # * ECCODES_OMP_THREADS , enable OMP threads
 # * EXTRA_TESTS , enable extended regression testing
 #
+#-- The following features are set to AUTO by default and
+#   explicitely switched on to ensure they don't vanish unnoticed
+#   in case of dependency problems during the build:
+# * ENABLE_JPG
+# ^ ENABLE_FORTRAN
+# * ENABLE_NETCDF
+#   NetCDF is only needed to create the grib_to_netcdf convert tool
+#
+# * ENABLE_PYTHON has value AUTO as default, so if python2 is available
+#   during a package build it will build an interface for it.
+#   To make sure it does not do so,  explicitely switch it off.
+#   Python3 support has been moved to an additional project now,
+#   so python handling has been removed completely from this spec file.
+#
 #-- Also add an explicit option to not use rpath
 #
 # Note: -DINSTALL_LIB_DIR=%%{_lib} is needed because otherwise
 #        the library so files get installed in /usr/lib in stead
 #        of /usr/lib64 on x86_64.
-# Note: -DPYTHON_EXECUTABLE was added to prevent deprecation warnings
-#        during running of tests which breaks
-#        Test #184: eccodes_p_grib_keys_iterator_test
 
 %cmake3 -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
         -DENABLE_EXTRA_TESTS=ON \
+        -DENABLE_JPG=ON \
         -DENABLE_PNG=ON \
-        -DCMAKE_SKIP_RPATH=TRUE \
+        -DENABLE_FORTRAN=ON \
+        -DENABLE_NETCDF=ON \
+        -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
         -DENABLE_PYTHON=OFF \
         ..
-#        -DPYTHON_EXECUTABLE=%%{_bindir}/python2 \
+# note:
+# with -DCMAKE_SKIP_RPATH=TRUE
+# LD_LIBRARY_PATH and #LIBRARY_PATH need to be defined before running ctest.
+# with -DCMAKE_SKIP_INSTALL_RPATH=TRUE this seems not needed
 
 %make_build
 
@@ -298,19 +283,24 @@ mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/C
 cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
-#mkdir -p %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
-#cp examples/python/*.py %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
-#cp examples/python/*.c %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
-#cp examples/python/*.csv %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python
 
-# adapt a shebang to make it point explicitely to python2
-#sed -i -e 's/\/bin\/env python/\/usr\/bin\/python2/' \
-#    %%{buildroot}%%{_datadir}/doc/%%{name}/examples/python/high_level_api.py
+%ifarch i686 armv7hl
+  # pass (nothing to do)
+%else
+  # it seems pkgconfig files end up in lib in stead of lib64 now
+  # so move them to the right place
+  mv %{buildroot}/%{_usr}/lib/pkgconfig/ \
+     %{buildroot}/%{_libdir}/pkgconfig/
+%endif
 
-# move cmake files to the cmake folder below libdir
-# as suggested in the review request
-mkdir -p %{buildroot}%{_libdir}/cmake/%{name}/
-mv %{buildroot}%{_datadir}/%{name}/cmake/* %{buildroot}%{_libdir}/cmake/%{name}/
+# It seems the cmake options
+# -DCMAKE_SKIP_RPATH=TRUE
+# -DCMAKE_SKIP_INSTALL_RPATH=TRUE
+# have no effect on the generated *.pc files.
+# These still contain an rpath reference, so patch them and remove 
+# the rpath using sed
+sed -i 's|^libs=.*$|libs=-L${libdir} -leccodes|g' %{buildroot}/%{_libdir}/pkgconfig/eccodes.pc
+sed -i 's|^libs=.*$|libs=-L${libdir} -leccodes_f90 -leccodes|g' %{buildroot}/%{_libdir}/pkgconfig/eccodes_f90.pc
 
 %ldconfig_scriptlets
 
@@ -333,8 +323,10 @@ cd build
 # so a patch has been added to solve this for now.
 # See: https://software.ecmwf.int/issues/browse/SUP-1812
 # (unfortunately this issue is not public)
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-LIBRARY_PATH=%{buildroot}/%{_libdir} \
+
+#LD_LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
+#LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
+
 ctest3 %{?_smp_mflags}
 
 %files
@@ -342,11 +334,6 @@ ctest3 %{?_smp_mflags}
 %doc README.md ChangeLog AUTHORS NEWS NOTICE
 %{_bindir}/*
 %{_libdir}/*.so.*
-
-#%%files -n python2-%%{name}
-#%%{python2_sitearch}/%%{name}
-#%%{python2_sitearch}/%%{name}-*-py*.egg-info
-#%%{python2_sitearch}/gribapi
 
 %files devel
 %{_includedir}/*
@@ -368,6 +355,15 @@ ctest3 %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Sat Aug 10 2019 Jos de Kloe <josdekloe@gmail.com> - 2.13.0-2
+- apply bugfix to pc files contribuited by Emanuele Di Giacomo
+
+* Thu Jul 25 2019 Jos de Kloe <josdekloe@gmail.com> - 2.13.0-1
+- Upgrade to upstream version 2.13.0
+
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.12.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Thu May 09 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.5-1
 - Upgrade to upstream version 2.12.5
 
