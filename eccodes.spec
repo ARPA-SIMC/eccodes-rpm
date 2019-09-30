@@ -59,7 +59,6 @@ BuildRequires:  jasper-devel
 BuildRequires:  libjpeg-devel
 BuildRequires:  libpng-devel
 BuildRequires:  netcdf-devel
-BuildRequires:  numpy
 BuildRequires:  openjpeg2-devel
 
 # For tests
