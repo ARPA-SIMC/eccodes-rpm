@@ -19,6 +19,8 @@ then
     pkgcmd="dnf"
     builddep="dnf builddep"
     sed -i '/^tsflags=/d' /etc/dnf/dnf.conf
+    dnf install -q -y epel-release
+    dnf config-manager --set-enabled PowerTools
     dnf install groupinstall -q -y "Development Tools"
     dnf install -q -y 'dnf-command(builddep)'
     dnf install -q -y git
