@@ -22,7 +22,7 @@ then
     dnf install -q -y epel-release
     dnf install -q -y 'dnf-command(config-manager)'
     dnf config-manager --set-enabled PowerTools
-    dnf install groupinstall -q -y "Development Tools"
+    dnf groupinstall -q -y "Development Tools"
     dnf install -q -y 'dnf-command(builddep)'
     dnf install -q -y git
     dnf install -q -y rpmdevtools
