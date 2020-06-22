@@ -1,11 +1,7 @@
-# adapted from:
-# https://src.fedoraproject.org/rpms/eccodes/blob/f30/f/eccodes.spec
-
-%global releaseno 2
-
+# adapted from F32 sources
 Name:           eccodes
-Version:        2.13.0
-Release:        %{releaseno}%{?dist}
+Version:        2.17.0
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -13,13 +9,18 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20181010
 
-# latest rawhide grib_api version is 1.27.0-4
+# latest rawhide grib_api version is 1.27.0-7
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
 # see https://confluence.ecmwf.int/display/GRIB/Home
 %global final_grib_api_version 1.28.1-1%{?dist}
 
+%ifarch i686 ppc64 s390x armv7hl
+  %global obsolete_grib_api 0
+%else
+  %global obsolete_grib_api 1
+%endif
 
 # license remarks:
 # Most of eccodes is licensed ASL 2.0 but a special case must be noted.
@@ -64,6 +65,7 @@ BuildRequires:  openjpeg2-devel
 # For tests
 BuildRequires:  perl(Getopt::Long)
 BuildRequires:  perl(Test::More)
+BuildRequires:  perl(File::Compare)
 
 # the data is needed by the library and all tools provided in the main package
 # the other way around, the data package could be installed without
@@ -87,23 +89,18 @@ Requires: %{name}-data = %{version}-%{release}
 # "Please note that GRIB-API support is being discontinued at the end of 2018."
 # So the old grib_api will need to be obsoleted.
 
+%if 0%{obsolete_grib_api}
+# as stated in the note above, setting provides seems not correct here
+# Provides:       grib_api = %%{final_grib_api_version}
 Obsoletes:      grib_api < %{final_grib_api_version}
+%endif
 
 # as explained in bugzilla #1562066
 ExcludeArch: i686
-# as explained in bugzilla #1562071
-#  note: this is no longer part of fc30/rawhide
-#  but the exclude is still needed for EPEL-7
-#ExcludeArch: ppc64
 # as explained in bugzilla #1562076
 ExcludeArch: s390x
 # as explained in bugzilla #1562084
 ExcludeArch: armv7hl
-
-%if 0%{?rhel} >= 7
-# as explained in bugzilla #1629377
-ExcludeArch: aarch64
-%endif
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -145,7 +142,10 @@ Requires:   %{name}%{?_isa} = %{version}-%{release}
 Requires:   gcc-gfortran%{?_isa}
 Requires:   jasper-devel%{?_isa}
 
+%if 0%{obsolete_grib_api}
+# Provides:   grib_api-devel = %%{final_grib_api_version}
 Obsoletes:  grib_api-devel < %{final_grib_api_version}
+%endif
 
 %description devel
 Header files and libraries for ecCodes.
@@ -228,6 +228,14 @@ cd build
 #        the library so files get installed in /usr/lib in stead
 #        of /usr/lib64 on x86_64.
 
+# Build with -fallow-argument-mismatch for gcc 10 compatibility
+# otherwise the fortran interface fails to compile
+# (thanks for the hint Orion)
+# Reported upstream at https://jira.ecmwf.int/browse/SUP-3081
+# note that setting FCFLAGS is not sufficient, i.e. this doesn't work:
+#     export FCFLAGS="%%{build_fflags} -fallow-argument-mismatch"
+# defining the -DCMAKE_Fortran_FLAGS for camke is required to let it compile.
+
 %cmake3 -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
@@ -239,12 +247,9 @@ cd build
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
+        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch" \
         -DENABLE_PYTHON=OFF \
         ..
-# note:
-# with -DCMAKE_SKIP_RPATH=TRUE
-# LD_LIBRARY_PATH and #LIBRARY_PATH need to be defined before running ctest.
-# with -DCMAKE_SKIP_INSTALL_RPATH=TRUE this seems not needed
 
 %make_build
 
@@ -283,14 +288,16 @@ cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 
-%ifarch i686 armv7hl
-  # pass (nothing to do)
-%else
-  # it seems pkgconfig files end up in lib in stead of lib64 now
-  # so move them to the right place
-  mv %{buildroot}/%{_usr}/lib/pkgconfig/ \
-     %{buildroot}/%{_libdir}/pkgconfig/
-%endif
+# also not needed for x86_64
+# maybe they fixed it for all archs?
+#%%ifarch i686 armv7hl
+#  # pass (nothing to do)
+#%%else
+#  # it seems pkgconfig files end up in lib in stead of lib64 now
+#  # so move them to the right place
+#  mv %%{buildroot}/%%{_usr}/lib/pkgconfig/ \
+#     %%{buildroot}/%%{_libdir}/pkgconfig/
+#%%endif
 
 # It seems the cmake options
 # -DCMAKE_SKIP_RPATH=TRUE
@@ -314,18 +321,9 @@ cd build
 #   'eccodes_t_bufr_dump_(de|en)code_C' tests run.
 #   These tests compile on the fly generated C code, and
 #   without this setting the loader does not find the libraries.
-# 
-# These fail due to build flag issues, i.e. the test script does a
-# test build of some on the fly generated fortran code, but cannot
-# find the necessary *.mod fortran module definition files.
-# There is no easy way to define this as environment setting,
-# so a patch has been added to solve this for now.
-# See: https://software.ecmwf.int/issues/browse/SUP-1812
-# (unfortunately this issue is not public)
 
-#LD_LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
-#LIBRARY_PATH=%%{buildroot}/%%{_libdir} \
-
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+LIBRARY_PATH=%{buildroot}/%{_libdir} \
 ctest3 %{?_smp_mflags}
 
 %files
@@ -354,6 +352,22 @@ ctest3 %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Sun Mar 15 2020 Jos de Kloe <josdekloe@gmail.com> - 2.17.0-1
+- Upgrade to upstream version 2.17.0
+- Add explcit BR to perl(File::Compare) as needed by the tests now
+
+* Sat Feb 08 2020 Jos de Kloe <josdekloe@gmail.com> - 2.16.0-1
+- Upgrade to upstream version 2.16.0
+
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.15.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Sun Dec 15 2019 Jos de Kloe <josdekloe@gmail.com> - 2.15.0-1
+- Upgrade to upstream version 2.15.0
+
+* Sun Oct 27 2019 Jos de Kloe <josdekloe@gmail.com> - 2.14.1-1
+- Upgrade to upstream version 2.14.1
+
 * Sat Aug 10 2019 Jos de Kloe <josdekloe@gmail.com> - 2.13.0-2
 - apply bugfix to pc files contribuited by Emanuele Di Giacomo
 
