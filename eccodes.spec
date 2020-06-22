@@ -239,6 +239,9 @@ cd build
 #     export FCFLAGS="%%{build_fflags} -fallow-argument-mismatch"
 # defining the -DCMAKE_Fortran_FLAGS for camke is required to let it compile.
 
+# this generates an error for gcc-gfortran < 10
+#        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch" \
+
 %cmake3 -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
@@ -250,9 +253,9 @@ cd build
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch" \
         -DENABLE_PYTHON=OFF \
         ..
+
 
 %make_build
 
