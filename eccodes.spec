@@ -39,14 +39,14 @@ Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/ec
 # to make it versioned in fedora
 #Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
 # http protocol disabled in copr
-Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
+Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{release}/eccodes_test_data.tar.gz
 # Support 32-bit
 # https://software.ecmwf.int/issues/browse/SUP-1813
 # (unfortunately this issue is not public)
-Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-32bit.patch
+Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{release}/eccodes-32bit.patch
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://software.ecmwf.int/issues/browse/SUP-1809
-Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
+Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{release}/eccodes-soversion.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
