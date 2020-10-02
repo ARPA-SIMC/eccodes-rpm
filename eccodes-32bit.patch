@@ -1,6 +1,6 @@
---- eccodes-2.17.0-Source.unchanged/src/grib_api_prototypes.h	2020-03-09 11:17:48.000000000 +0100
-+++ eccodes-2.17.0-Source/src/grib_api_prototypes.h	2020-03-14 11:59:43.493457319 +0100
-@@ -873,8 +873,8 @@ double grib_ieeefloat_error(double x);
+--- eccodes-2.18.0-Source.unchanged/src/grib_api_prototypes.h	2020-06-24 11:11:27.000000000 +0200
++++ eccodes-2.18.0-Source/src/grib_api_prototypes.h	2020-06-27 09:23:17.543758993 +0200
+@@ -860,8 +860,8 @@ double grib_ieeefloat_error(double x);
  double grib_long_to_ieee(unsigned long x);
  int grib_nearest_smaller_ieee_float(double a, double* x);
  unsigned long grib_ieee_to_long(double x);
@@ -11,8 +11,8 @@
  int grib_ieee_decode_array(grib_context* c, unsigned char* buf, size_t nvals, int bytes, double* val);
  int grib_ieee_decode_array(grib_context* c, unsigned char* buf, size_t nvals, int bytes, double* val);
  int grib_ieee_encode_array(grib_context* c, double* val, size_t nvals, int bytes, unsigned char* buf);
---- eccodes-2.17.0-Source.unchanged/src/grib_ieeefloat.c	2020-03-09 11:17:48.000000000 +0100
-+++ eccodes-2.17.0-Source/src/grib_ieeefloat.c	2020-03-14 12:07:45.848470121 +0100
+--- eccodes-2.18.0-Source.unchanged/src/grib_ieeefloat.c	2020-06-24 11:11:27.000000000 +0200
++++ eccodes-2.18.0-Source/src/grib_ieeefloat.c	2020-06-27 09:23:17.545758944 +0200
 @@ -443,14 +443,14 @@ unsigned long grib_ieee_to_long(double x
   * grib_encode_unsigned_long.
   */
