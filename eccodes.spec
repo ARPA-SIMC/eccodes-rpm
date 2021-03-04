@@ -52,7 +52,7 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 # https://software.ecmwf.int/issues/browse/SUP-2073
 # (and again, unfortunately this issue is not public)
 
-BuildRequires:  cmake3
+BuildRequires:  cmake
 BuildRequires:  gcc
 BuildRequires:  gcc-gfortran
 BuildRequires:  /usr/bin/git
@@ -239,7 +239,7 @@ cd build
 # this generates an error for gcc-gfortran < 10
 #        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch" \
 
-%cmake3 -DINSTALL_LIB_DIR=%{_lib} \
+%cmake -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
         -DENABLE_EXTRA_TESTS=ON \
