@@ -28,7 +28,7 @@ then
     dnf install -q -y rpmdevtools
     dnf install -q -y pv
     # forcing update of recent cmake, needed for latest eccodes versions
-    dnf install -q -y libarchive libarchive-devel cmake --disablerepo=\* --enablerepo=appstream,powertools,baseos --releasever=8-stream --refresh
+    dnf install -y libarchive libarchive-devel cmake --disablerepo=\* --enablerepo=appstream,powertools,baseos --releasever=8-stream --refresh
 elif [[ $image =~ ^fedora: ]]
 then
     pkgcmd="dnf"
