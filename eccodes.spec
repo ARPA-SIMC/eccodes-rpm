@@ -326,7 +326,7 @@ cd build
 
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest3 %{?_smp_mflags}
+ctest %{?_smp_mflags}
 
 %files
 %license LICENSE
