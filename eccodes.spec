@@ -1,9 +1,9 @@
 # adapted from F32 sources
 
-%global releaseno 2
+%global releaseno 1
 
 Name:           eccodes
-Version:        2.18.0
+Version:        2.20.0
 Release:        %{releaseno}%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -12,11 +12,12 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20200626
 
-# latest fedora-32 grib_api version is 1.27.0-7
+# latest fedora-33 grib_api version is 1.27.0-8
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
-# see https://confluence.ecmwf.int/display/GRIB/Home
+# is was written on https://confluence.ecmwf.int/display/GRIB/Home
+# (Note that this page is no longer available, 17-Oct-2020)
 %global final_grib_api_version 1.28.1-1%{?dist}
 
 %ifarch i686 ppc64 s390x armv7hl
@@ -43,13 +44,9 @@ Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/ec
 #Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
 # http protocol disabled in copr
 Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
-# Support 32-bit
-# https://software.ecmwf.int/issues/browse/SUP-1813
-# (unfortunately this issue is not public)
-Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-32bit.patch
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://software.ecmwf.int/issues/browse/SUP-1809
-Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
+Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
@@ -357,6 +354,26 @@ ctest3 %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Sat Jan 23 2021 Jos de Kloe <josdekloe@gmail.com> - 2.20.0-1
+- Upgrade to upstream version 2.20.0
+
+* Fri Nov 13 2020 Jos de Kloe <josdekloe@gmail.com> - 2.19.1-1
+- Upgrade to upstream version 2.19.1
+
+* Sat Oct 17 2020 Jos de Kloe <josdekloe@gmail.com> - 2.19.0-1
+- Upgrade to upstream version 2.19.0 and remove patch 1
+- Add -fpic to the fortran flags (needed for compiling on armv7hl)
+
+* Wed Aug 05 2020 Jos de Kloe <josdekloe@gmail.com> - 2.18.0-5
+- Adapt the spec file to use the new style cmake macros
+
+* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.18.0-4
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.18.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Sat Jun 27 2020 Jos de Kloe <josdekloe@gmail.com> - 2.18.0-2
 - Rebuild after fixing mistake in ExcludeArch statements
 

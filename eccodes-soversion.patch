@@ -1,21 +1,20 @@
---- eccodes-2.18.0-Source.unchanged/fortran/CMakeLists.txt	2020-06-24 11:11:27.000000000 +0200
-+++ eccodes-2.18.0-Source/fortran/CMakeLists.txt	2020-06-27 09:23:33.020376062 +0200
-@@ -45,7 +45,9 @@ if( HAVE_FORTRAN )
-     ecbuild_add_library( TARGET     eccodes_f90
-                          SOURCES    grib_fortran.c grib_f90.f90 eccodes_f90.f90 grib_kinds.h
-                          GENERATED  grib_f90.f90 eccodes_f90.f90
--                         LIBS       eccodes )
-+                         LIBS       eccodes
-+                         SOVERSION  ${ECCODES_SOVERSION_F90})
-+
+--- eccodes-2.20.0-Source.unchanged/fortran/CMakeLists.txt	2021-01-20 13:18:04.000000000 +0100
++++ eccodes-2.20.0-Source/fortran/CMakeLists.txt	2021-01-23 17:35:32.042141813 +0100
+@@ -49,7 +49,8 @@ if( HAVE_FORTRAN )
+                          GENERATED       grib_f90.f90 eccodes_f90.f90
+                          PUBLIC_INCLUDES $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
+                                          $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+-                         PRIVATE_LIBS    eccodes )
++                         PRIVATE_LIBS    eccodes
++                         SOVERSION       ${ECCODES_SOVERSION_F90})
+ 
      if( DEFINED ecbuild_VERSION AND NOT ${ecbuild_VERSION} VERSION_LESS 3.1 )
          # Installed module directory is not in the PUBLIC INCLUDES!
-         target_include_directories( eccodes_f90 PUBLIC $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}> )
---- eccodes-2.18.0-Source.unchanged/src/CMakeLists.txt	2020-06-24 11:11:27.000000000 +0200
-+++ eccodes-2.18.0-Source/src/CMakeLists.txt	2020-06-27 09:27:13.845630950 +0200
-@@ -442,6 +442,7 @@ ecbuild_add_library( TARGET    eccodes
-                      GENERATED grib_api_version.c
-                      LIBS      ${ECCODES_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${CMATH_LIBRARIES}
+--- eccodes-2.20.0-Source.unchanged/src/CMakeLists.txt	2021-01-20 13:18:04.000000000 +0100
++++ eccodes-2.20.0-Source/src/CMakeLists.txt	2021-01-23 17:35:32.043141787 +0100
+@@ -445,6 +445,7 @@ ecbuild_add_library( TARGET    eccodes
+                      PRIVATE_LIBS ${ECCODES_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${AEC_LIBRARIES} ${PNG_LIBRARIES}
+                      PUBLIC_LIBS  ${CMATH_LIBRARIES} ${THREADS_LIBRARIES}
                       TEMPLATES ${grib_api_extra_srcs}
 +		     SOVERSION ${ECCODES_SOVERSION}
                       INSTALL_HEADERS_LIST

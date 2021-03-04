@@ -6,7 +6,7 @@
 
 
 This github repository neither hosts nor provide ecCodes sources, it's meant to
-host convenience files for backporting recent versions to CentOs 8g (derived from
+host convenience files for backporting recent versions to CentOs 8 (derived from
 official fedora eccodes package: https://src.fedoraproject.org/rpms/eccodes)
 
 ecCodes is a package developed by ECMWF which provides an application
