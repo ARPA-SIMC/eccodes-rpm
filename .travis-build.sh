@@ -27,6 +27,7 @@ then
     dnf install -q -y git
     dnf install -q -y rpmdevtools
     dnf install -q -y pv
+    dnf copr enable -y simc/stable
     # the following lines are useless since cmake 3.18 has been integrated in simc/stable
     ## forcing update of recent cmake, needed for latest eccodes versions
     #dnf install -q -y libarchive libarchive-devel cmake cmake-rpm-macros --disablerepo=\* --enablerepo=appstream,powertools,baseos --releasever=8-stream --refresh
