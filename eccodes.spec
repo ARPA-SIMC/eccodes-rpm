@@ -54,7 +54,7 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 
 BuildRequires:  cmake >= 3.12
 # forcing libarchive update in CentOS 8 from simc/stable repo
-%{?el8:Requires: libarchive >= 3.3.3}
+%{?el8:BuildRequires: libarchive >= 3.3.3}
 BuildRequires:  gcc
 BuildRequires:  gcc-gfortran
 BuildRequires:  /usr/bin/git
