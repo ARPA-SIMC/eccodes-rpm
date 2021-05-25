@@ -1,9 +1,7 @@
-# rpm packaging files for ecCodes
-
-[![Build Status](https://badges.herokuapp.com/travis/ARPA-SIMC/eccodes-rpm?branch=master&env=DOCKER_IMAGE=centos:8&label=centos8)](https://travis-ci.org/ARPA-SIMC/eccodes-rpm)
- 
+[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/centos8.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
 [![Build Status](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/)
 
+# rpm packaging files for ecCodes
 
 This github repository neither hosts nor provide ecCodes sources, it's meant to
 host convenience files for backporting recent versions to CentOs 8 (derived from
