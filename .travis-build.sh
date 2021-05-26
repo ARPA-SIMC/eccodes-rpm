@@ -53,8 +53,6 @@ then
     cp *.patch ~/rpmbuild/SOURCES/
     spectool -g -R ~/rpmbuild/SPECS/eccodes.spec
     rpmbuild -ba ~/rpmbuild/SPECS/eccodes.spec 2>&1 | pv -q -L 3k
-    find ~/rpmbuild/{RPMS,SRPMS}/ -name "${pkgname}*rpm" -exec cp -v {} . \;
-    # TODO upload ${pkgname}*.rpm to github release on deploy stage
 else
     echo "Unsupported image"
     exit 1
