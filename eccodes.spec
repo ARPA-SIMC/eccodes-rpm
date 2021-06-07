@@ -242,6 +242,13 @@ chmod 644 AUTHORS LICENSE
 # when I try to build for armv7hl (other archs do not complain ......)
 # I have no idea what causes this difference in behaviour.
 
+%if 0%{?fedora} >= 34
+# we have working cmake3 macros
+%else
+pushd %{_vpath_builddir}
+%define cmake_path 1
+%endif
+
 %cmake3 -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
@@ -253,8 +260,7 @@ chmod 644 AUTHORS LICENSE
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DCMAKE_Fortran_FLAGS="-fPIC" \
-        -DENABLE_PYTHON=OFF
+        -DCMAKE_Fortran_FLAGS="-fPIC" %{?cmake_path:..}
 
 # not needed anymore (solved in the cmake file now)
 #        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch"
@@ -264,13 +270,32 @@ chmod 644 AUTHORS LICENSE
 
 %cmake_build
 
+%if 0%{?fedora} >= 34
+# we have working cmake3 macros
+%else
+popd
+%endif
+
 # copy some include files to the build dir
 # that are otherwise not found when creating the debugsource sub-package
 cp fortran/eccodes_constants.h %{_vpath_builddir}/fortran/
 cp fortran/grib_api_constants.h %{_vpath_builddir}/fortran/
 
 %install
+%if 0%{?fedora} >= 34
+# we have working cmake3 macros
+%else
+pushd %{_vpath_builddir}
+%endif
+
 %cmake_install
+
+%if 0%{?fedora} >= 34
+# we have working cmake3 macros
+%else
+popd
+%endif
+
 mkdir -p %{buildroot}%{_fmoddir}
 mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}/
 
@@ -336,7 +361,11 @@ cd  %{_vpath_builddir}
 
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest3 -V %{?_smp_mflags}
+%if 0%{?fedora} >= 34
+ctest3 %{?_smp_mflags}
+%else
+ctest %{?_smp_mflags}
+%endif
 
 %files
 %license LICENSE
