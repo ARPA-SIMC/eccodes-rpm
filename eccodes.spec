@@ -1,10 +1,10 @@
-# adapted from F32 sources
+# adapted from F35 sources
 
 %global releaseno 1
 
 Name:           eccodes
-Version:        2.20.0
-Release:        %{releaseno}%{?dist}
+Version:        2.22.0
+Release:        %{releaseno}SIMC%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -12,7 +12,7 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20200626
 
-# latest fedora-33 grib_api version is 1.27.0-8
+# latest fedora-34 grib_api version is 1.27.0-9
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
@@ -181,12 +181,12 @@ in C, and Fortran 90.
 %autosetup -n %{name}-%{version}-Source -p1
 
 # unpack the test data below build
-mkdir build
-cd build
+mkdir -p %{_vpath_builddir}
+pushd %{_vpath_builddir}
 tar xf %SOURCE1
+popd
 
 # remove executable permissions from c files
-cd ..
 chmod 644 tigge/*.c
 chmod 644 tools/*.c
 
@@ -194,7 +194,6 @@ chmod 644 tools/*.c
 chmod 644 AUTHORS LICENSE
 
 %build
-cd build
 
 #-- The following features are disabled by default and not switched on:
 #
@@ -238,10 +237,12 @@ cd build
 #     export FCFLAGS="%%{build_fflags} -fallow-argument-mismatch"
 # defining the -DCMAKE_Fortran_FLAGS for camke is required to let it compile.
 
-# this generates an error for gcc-gfortran < 10
-#        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch" \
+# added -DCMAKE_Fortran_FLAGS="-fPIC"
+# because the koji build crashes with the error that it needs this setting
+# when I try to build for armv7hl (other archs do not complain ......)
+# I have no idea what causes this difference in behaviour.
 
-%cmake -DINSTALL_LIB_DIR=%{_lib} \
+%cmake3 -DINSTALL_LIB_DIR=%{_lib} \
         -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
         -DENABLE_EXTRA_TESTS=ON \
@@ -252,19 +253,24 @@ cd build
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DENABLE_PYTHON=OFF \
-        ..
+        -DCMAKE_Fortran_FLAGS="-fPIC" \
+        -DENABLE_PYTHON=OFF
 
-%make_build
+# not needed anymore (solved in the cmake file now)
+#        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch"
+
+# note the final '..' is no longer needed to the cmake3 call.
+# this is now hidden in the %%cmake3 macro
+
+%cmake_build
 
 # copy some include files to the build dir
-# that are otherwise not found when creating the debugsource subpackage
-cd ..
-cp fortran/eccodes_constants.h build/fortran/
-cp fortran/grib_api_constants.h build/fortran/
+# that are otherwise not found when creating the debugsource sub-package
+cp fortran/eccodes_constants.h %{_vpath_builddir}/fortran/
+cp fortran/grib_api_constants.h %{_vpath_builddir}/fortran/
 
 %install
-%make_install -C build
+%cmake_install
 mkdir -p %{buildroot}%{_fmoddir}
 mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}/
 
@@ -315,7 +321,7 @@ sed -i 's|^libs=.*$|libs=-L${libdir} -leccodes_f90 -leccodes|g' %{buildroot}/%{_
 %ldconfig_scriptlets
 
 %check
-cd build
+cd  %{_vpath_builddir}
 
 # notes:
 # * the LD_LIBRARY_PATH setting is required to let the tests
@@ -325,10 +331,12 @@ cd build
 #   'eccodes_t_bufr_dump_(de|en)code_C' tests run.
 #   These tests compile on the fly generated C code, and
 #   without this setting the loader does not find the libraries.
+# * this is a 'non-standard' use of ctest3 so it does currently not
+#   work with the %%ctest macro.
 
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest %{?_smp_mflags}
+ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
@@ -356,6 +364,15 @@ ctest %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Mon May 24 2021 Jos de Kloe <josdekloe@gmail.com> - 2.22.0-1
+- Upgrade to upstream version 2.22.0
+
+* Sun Mar 28 2021 Jos de Kloe <josdekloe@gmail.com> - 2.21.0-1
+- Upgrade to upstream version 2.21.0
+
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.20.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Sat Jan 23 2021 Jos de Kloe <josdekloe@gmail.com> - 2.20.0-1
 - Upgrade to upstream version 2.20.0
 
