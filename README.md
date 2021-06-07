@@ -1,4 +1,6 @@
 [![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/centos8.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
+[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/fedora32.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
+[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/fedora34.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
 [![Build Status](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/)
 
 # rpm packaging files for ecCodes
