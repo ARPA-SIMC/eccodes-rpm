@@ -53,7 +53,7 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 # on Fedora rawhide the code returns a value of 2.
 # Issue reported upstream as: https://jira.ecmwf.int/browse/SUP-3497
 #Patch2:         eccodes-test-grib_to_netcdf.patch
-Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-test-grib_to_netcdf.patch
+Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-test-grib_to_netcdf.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
