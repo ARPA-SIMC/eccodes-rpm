@@ -1,0 +1,15 @@
+--- eccodes-2.23.0-Source.unchanged/tests/grib_to_netcdf.sh	2021-08-25 11:35:41.000000000 +0200
++++ eccodes-2.23.0-Source/tests/grib_to_netcdf.sh	2021-09-02 10:31:33.417295119 +0200
+@@ -64,8 +64,10 @@ if [ $ECCODES_ON_WINDOWS -eq 0 ]; then
+     set -e
+     if [ $stat -eq 0 ]; then
+         have_netcdf4=1
+-        res=`${tools_dir}/grib_get -TA -p identifier,versionNumberOfSuperblock $tempNetcdf`
+-        [ "$res" = "HDF5 0" ]
++#        res=`${tools_dir}/grib_get -TA -p identifier,versionNumberOfSuperblock $tempNetcdf`
++#        [ "$res" = "HDF5 0" ]
++        res=`${tools_dir}/grib_get -TA -p identifier $tempNetcdf`
++        [ "$res" = "HDF5" ]
+     fi
+ fi
+ 

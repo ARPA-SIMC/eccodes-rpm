@@ -1,9 +1,9 @@
-# adapted from F35 sources
+# adapted from F34 sources
 
 %global releaseno 1
 
 Name:           eccodes
-Version:        2.22.0
+Version:        2.23.0
 Release:        %{releaseno}SIMC%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -12,11 +12,11 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20200626
 
-# latest fedora-34 grib_api version is 1.27.0-9
+# latest fedora-35 grib_api version is 1.27.0-12
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
-# is was written on https://confluence.ecmwf.int/display/GRIB/Home
+# as was written on https://confluence.ecmwf.int/display/GRIB/Home
 # (Note that this page is no longer available, 17-Oct-2020)
 %global final_grib_api_version 1.28.1-1%{?dist}
 
@@ -46,7 +46,14 @@ Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/ec
 Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://software.ecmwf.int/issues/browse/SUP-1809
+#Patch1:         eccodes-soversion.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
+
+# Disable versionNumberOfSuperblock checking, since the test expects 0 but
+# on Fedora rawhide the code returns a value of 2.
+# Issue reported upstream as: https://jira.ecmwf.int/browse/SUP-3497
+#Patch2:         eccodes-test-grib_to_netcdf.patch
+Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-test-grib_to_netcdf.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
@@ -229,14 +236,6 @@ chmod 644 AUTHORS LICENSE
 #        the library so files get installed in /usr/lib in stead
 #        of /usr/lib64 on x86_64.
 
-# Build with -fallow-argument-mismatch for gcc 10 compatibility
-# otherwise the fortran interface fails to compile
-# (thanks for the hint Orion)
-# Reported upstream at https://jira.ecmwf.int/browse/SUP-3081
-# note that setting FCFLAGS is not sufficient, i.e. this doesn't work:
-#     export FCFLAGS="%%{build_fflags} -fallow-argument-mismatch"
-# defining the -DCMAKE_Fortran_FLAGS for camke is required to let it compile.
-
 # added -DCMAKE_Fortran_FLAGS="-fPIC"
 # because the koji build crashes with the error that it needs this setting
 # when I try to build for armv7hl (other archs do not complain ......)
@@ -260,10 +259,8 @@ pushd %{_vpath_builddir}
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DCMAKE_Fortran_FLAGS="-fPIC" %{?cmake_path:..}
-
-# not needed anymore (solved in the cmake file now)
-#        -DCMAKE_Fortran_FLAGS="-fallow-argument-mismatch"
+        -DCMAKE_Fortran_FLAGS="-fPIC" %{?cmake_path:..} \
+        -DENABLE_PYTHON2=OFF
 
 # note the final '..' is no longer needed to the cmake3 call.
 # this is now hidden in the %%cmake3 macro
@@ -393,6 +390,21 @@ ctest %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Thu Sep 02 2021 Jos de Kloe <josdekloe@gmail.com> - 2.23.0-1
+- Upgrade to upstream version 2.23.0
+
+* Wed Aug 11 2021 Orion Poplawski <orion@nwra.com> - 2.22.1-4
+- Rebuild for netcdf 4.8.0
+
+* Tue Aug 10 2021 Orion Poplawski <orion@nwra.com> - 2.22.1-3
+- Rebuild for netcdf 4.8.0
+
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.22.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Sat Jun 19 2021 Jos de Kloe <josdekloe@gmail.com> - 2.22.1-1
+- Upgrade to upstream version 2.22.1
+
 * Mon May 24 2021 Jos de Kloe <josdekloe@gmail.com> - 2.22.0-1
 - Upgrade to upstream version 2.22.0
 
@@ -513,7 +525,7 @@ ctest %{?_smp_mflags}
 - Implement so version because upstream refuses to do so
 - Add fix for test failure 184 and ldconfig_scriptlets
   and move unversioned so file to devel package
-  as suggested by Robert-André Mauchin
+  as suggested by Robert-Andre Mauchin
 - Add a documentation and a data sub-package
 - Change the license and add a note explaining why this was done
 
