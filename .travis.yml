@@ -12,7 +12,7 @@ before_deploy:
 deploy:
   skip_cleanup: true
   provider: script
-  script: docker run -v ${TRAVIS_BUILD_DIR}:/root/src/ -w /root/src/ fedora:latest /bin/sh -c "dnf install -y copr-cli && copr-cli --config .copr build --chroot epel-8-x86_64 --chroot fedora-32-x86_64 --chroot fedora-33-x86_64 --chroot fedora-34-x86_64 --nowait simc/stable eccodes.spec"
+  script: docker run -v ${TRAVIS_BUILD_DIR}:/root/src/ -w /root/src/ fedora:latest /bin/sh -c "dnf install -y copr-cli && copr-cli --config .copr build --chroot epel-8-x86_64 --chroot fedora-34-x86_64 --nowait simc/stable eccodes.spec"
   true:
     branch: master
     condition: $DOCKER_IMAGE = centos:8
