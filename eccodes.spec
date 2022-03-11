@@ -58,7 +58,8 @@ Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{versi
 # Also, now with jasper3, calling jas_stream_memopen (for example) always needs jasper
 # library initialization
 #Patch2:         eccodes-jasper3-use-wrapper-entry-point.patch
-Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-jasper3-use-wrapper-entry-point.patch
+# Disabled since this is needed only on recent fedora versions
+#Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-jasper3-use-wrapper-entry-point.patch
 
 BuildRequires:  cmake >= 3.12
 # forcing libarchive update in CentOS 8 from simc/stable repo
