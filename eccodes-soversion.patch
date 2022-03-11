@@ -1,5 +1,5 @@
---- eccodes-2.23.0-Source.unchanged/fortran/CMakeLists.txt	2021-08-25 11:35:41.000000000 +0200
-+++ eccodes-2.23.0-Source/fortran/CMakeLists.txt	2021-09-01 08:40:58.089840900 +0200
+--- eccodes-2.25.0-Source.unchanged/fortran/CMakeLists.txt	2022-03-03 15:40:42.000000000 +0100
++++ eccodes-2.25.0-Source/fortran/CMakeLists.txt	2022-03-06 15:40:01.323606416 +0100
 @@ -49,7 +49,8 @@ if( HAVE_FORTRAN )
                           GENERATED       grib_f90.f90 eccodes_f90.f90
                           PUBLIC_INCLUDES $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
@@ -10,9 +10,9 @@
  
      if( DEFINED ecbuild_VERSION AND NOT ${ecbuild_VERSION} VERSION_LESS 3.1 )
          # Installed module directory is not in the PUBLIC INCLUDES!
---- eccodes-2.23.0-Source.unchanged/src/CMakeLists.txt	2021-08-25 11:35:41.000000000 +0200
-+++ eccodes-2.23.0-Source/src/CMakeLists.txt	2021-09-01 08:31:13.559364510 +0200
-@@ -444,6 +444,7 @@ ecbuild_add_library( TARGET    eccodes
+--- eccodes-2.25.0-Source.unchanged/src/CMakeLists.txt	2022-03-03 15:40:42.000000000 +0100
++++ eccodes-2.25.0-Source/src/CMakeLists.txt	2022-03-06 15:40:01.324606392 +0100
+@@ -437,6 +437,7 @@ ecbuild_add_library( TARGET    eccodes
                       PRIVATE_LIBS ${ECCODES_EXTRA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${AEC_LIBRARIES} ${PNG_LIBRARIES}
                       PUBLIC_LIBS  ${CMATH_LIBRARIES} ${THREADS_LIBRARIES}
                       TEMPLATES ${grib_api_extra_srcs}

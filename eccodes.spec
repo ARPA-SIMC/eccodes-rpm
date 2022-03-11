@@ -1,9 +1,9 @@
-# adapted from F34 sources
+# adapted from F37 sources
 
 %global releaseno 1
 
 Name:           eccodes
-Version:        2.23.0
+Version:        2.25.0
 Release:        %{releaseno}SIMC%{?dist}
 Summary:        WMO data format decoding and encoding
 
@@ -12,7 +12,7 @@ Summary:        WMO data format decoding and encoding
 %global so_version_f90   0.1
 %global datapack_date    20200626
 
-# latest fedora-35 grib_api version is 1.27.0-12
+# latest fedora-36 grib_api version is 1.27.0-12
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
@@ -36,7 +36,7 @@ Summary:        WMO data format decoding and encoding
 
 License:        ASL 2.0
 
-URL:            https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
+URL:            https://confluence.ecmwf.int/display/ECC/ecCodes+Home
 Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
 # note: this data package is unversioned upstream but still it is updated
 # now and then so rename the datapack using the download date
@@ -49,15 +49,16 @@ Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{ve
 #Patch1:         eccodes-soversion.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 
-# Disable versionNumberOfSuperblock checking, since the test expects 0 but
-# on Fedora rawhide the code returns a value of 2.
-# Issue reported upstream as: https://jira.ecmwf.int/browse/SUP-3497
-#Patch2:         eccodes-test-grib_to_netcdf.patch
-Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-test-grib_to_netcdf.patch
-
 # note that the requests to make the other issues public are filed here:
 # https://software.ecmwf.int/issues/browse/SUP-2073
 # (and again, unfortunately this issue is not public)
+
+# jasper3 now hides internal encoder / decoder. Use wrapper entry point
+# c.f. https://github.com/jasper-software/jasper/commit/5fe57ac5829ec31396e7eaab59a688da014660af
+# Also, now with jasper3, calling jas_stream_memopen (for example) always needs jasper
+# library initialization
+#Patch2:         eccodes-jasper3-use-wrapper-entry-point.patch
+Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 
 BuildRequires:  cmake >= 3.12
 # forcing libarchive update in CentOS 8 from simc/stable repo
@@ -70,6 +71,7 @@ BuildRequires:  libjpeg-devel
 BuildRequires:  libpng-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  openjpeg2-devel
+BuildRequires:  libaec-devel
 
 # For tests
 BuildRequires:  perl(Getopt::Long)
@@ -106,8 +108,6 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
 ExcludeArch: i686
-# as explained in bugzilla #1562076
-ExcludeArch: s390x
 # as explained in bugzilla #1562084
 ExcludeArch: armv7hl
 
@@ -390,6 +390,26 @@ ctest %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Sun Mar 06 2022 Jos de Kloe <josdekloe@gmail.com> - 2.25.0-1
+- Upgrade to upstream version 2.25.0
+- Add new BR libaec-devel
+
+* Mon Feb 14 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.24.0-4
+- jasper3: use wrapper entry point for jpeg2000 decoder
+
+* Sun Feb 13 2022 Josef Ridky <jridky@redhat.com> - 2.24.0-3
+- Rebuilt for libjasper.so.6
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.24.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Dec 09 2021 Jos de Kloe <josdekloe@gmail.com> - 2.24.0-1
+- Upgrade to upstream version 2.24.0
+- Remove no longer needed patch2 (grib_to_netcdf test fix)
+
+* Wed Dec  1 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.23.0-2
+- Patch grib_api_internal.h for big endian test suite issue (upstream bug SUP-2410)
+
 * Thu Sep 02 2021 Jos de Kloe <josdekloe@gmail.com> - 2.23.0-1
 - Upgrade to upstream version 2.23.0
 
