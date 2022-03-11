@@ -37,7 +37,7 @@ Summary:        WMO data format decoding and encoding
 License:        ASL 2.0
 
 URL:            https://confluence.ecmwf.int/display/ECC/ecCodes+Home
-Source0:        https://software.ecmwf.int/wiki/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
+Source0:        https://confluence.ecmwf.int/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
 # note: this data package is unversioned upstream but still it is updated
 # now and then so rename the datapack using the download date
 # to make it versioned in fedora
