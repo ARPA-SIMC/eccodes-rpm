@@ -11,4 +11,4 @@ host convenience files for backporting recent versions to CentOs 8 and Fedora 34
 ecCodes is a package developed by ECMWF which provides an application
 programming interface and a set of tools for decoding and encoding messages in
 GRIB e BUFR formats. For more info see:
-https://software.ecmwf.int/wiki/display/ECC/ecCodes+Home
+https://confluence.ecmwf.int/display/ECC/ecCodes+Home
