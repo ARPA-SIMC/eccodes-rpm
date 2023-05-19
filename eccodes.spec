@@ -38,15 +38,9 @@ License:        ASL 2.0
 
 URL:            https://confluence.ecmwf.int/display/ECC/ecCodes+Home
 Source0:        https://confluence.ecmwf.int/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
-# note: this data package is unversioned upstream but still it is updated
-# now and then so rename the datapack using the download date
-# to make it versioned in fedora
-#Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
-# http protocol disabled in copr
-Source1:        https://github.com/ARPA-SIMC/eccodes-rpm/releases/download/v%{version}-%{releaseno}/eccodes_test_data.tar.gz
+Source1:        https://get.ecmwf.int/repository/test-data/eccodes/eccodes_test_data.tar.gz
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://software.ecmwf.int/issues/browse/SUP-1809
-#Patch1:         eccodes-soversion.patch
 Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 
 # note that the requests to make the other issues public are filed here:
