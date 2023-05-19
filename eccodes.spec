@@ -1,6 +1,6 @@
 # adapted from F37 sources
 
-%global releaseno 1
+%global releaseno 2
 
 Name:           eccodes
 Version:        2.25.0
@@ -10,7 +10,6 @@ Summary:        WMO data format decoding and encoding
 # force the shared libraries to have these so versions
 %global so_version       0.1
 %global so_version_f90   0.1
-%global datapack_date    20200626
 
 # latest fedora-36 grib_api version is 1.27.0-12
 # but this version number is to be updated as soon as we know
@@ -385,6 +384,9 @@ ctest %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Fri May 19 2023 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.25.0-2
+- Download eccodes_test_data.tar.gz from ECMW website
+
 * Sun Mar 06 2022 Jos de Kloe <josdekloe@gmail.com> - 2.25.0-1
 - Upgrade to upstream version 2.25.0
 - Add new BR libaec-devel
