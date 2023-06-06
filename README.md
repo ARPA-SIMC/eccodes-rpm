@@ -1,5 +1,6 @@
-[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/rocky8.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
-[![Build Status](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/)
+# DISCONTINUED
+
+This repo was used to backport eccodes recent versions to EPEL 8, since then the package has been updated.
 
 # rpm packaging files for ecCodes
 
