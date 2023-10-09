@@ -1,4 +1,4 @@
-%global releaseno 0.2
+%global releaseno 0.3
 
 Name:           eccodes
 Version:        2.32.0
