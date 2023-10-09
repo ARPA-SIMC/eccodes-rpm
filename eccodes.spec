@@ -337,7 +337,6 @@ ctest3 -V %{?_smp_mflags}
 %doc README.md ChangeLog AUTHORS NEWS NOTICE
 %{_bindir}/*
 %{_libdir}/*.so.*
-%{_mandir}/man1/*.1*
 
 %files devel
 %{_includedir}/*
