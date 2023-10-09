@@ -198,7 +198,9 @@ popd
 
 %build
 
+%if 0%{?rhel} == 8
 pushd %{_vpath_builddir}
+%endif
 
 #-- The following features are disabled by default and not switched on:
 #
@@ -250,12 +252,20 @@ pushd %{_vpath_builddir}
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
         -DCMAKE_Fortran_FLAGS="-fPIC" \
         -DENABLE_PYTHON2=OFF \
-	-DENABLE_AEC=ON \
+        -DENABLE_AEC=ON \
+%if 0%{?rhel} == 8
         ..
+%endif
 
+%if 0%{?rhel} == 8
 %make_build
+%else
+%cmake_build
+%endif
 
+%if 0%{?rhel} == 8
 popd
+%endif
 
 # copy some include files to the build dir
 # that are otherwise not found when creating the debugsource sub-package
