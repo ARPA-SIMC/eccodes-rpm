@@ -41,12 +41,9 @@ Source0:        https://confluence.ecmwf.int/download/attachments/45757960/eccod
 # to make it versioned in fedora
 Source1:        https://get.ecmwf.int/repository/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
 
-# a custom script to create man pages
-Source2:        eccodes_create_man_pages.sh
-
 # Add soversion to the shared libraries, since upstream refuses to do so
 # https://jira.ecmwf.int/browse/SUP-1809
-Patch1:         eccodes-soversion.patch
+Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
 
 # note that the requests to make the other issues public are filed here:
 # https://jira.ecmwf.int/browse/SUP-2073
@@ -289,18 +286,6 @@ mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/C
 cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
-
-# create man pages for the tools that support the --help option
-# since upstream does not provide them.
-# Source2 points to the script eccodes_create_man_pages.sh
-# used to generate the man pages.
-LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
-%{SOURCE2} %{_vpath_builddir}/bin \
-           %{_vpath_builddir}/man
-
-# copy the created man pages to the install directory
-mkdir -p %{buildroot}%{_datadir}/man/man1
-cp %{_vpath_builddir}/man/*.1 %{buildroot}%{_datadir}/man/man1
 
 # Fix permissions
 chmod 644 AUTHORS LICENSE
