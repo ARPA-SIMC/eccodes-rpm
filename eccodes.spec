@@ -1,6 +1,8 @@
+%global releaseno 0.2
+
 Name:           eccodes
 Version:        2.32.0
-Release:        0.1%{?dist}
+Release:        %{releaseno}%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
