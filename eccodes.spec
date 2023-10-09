@@ -1,6 +1,6 @@
 Name:           eccodes
-Version:        2.31.0
-Release:        1%{?dist}
+Version:        2.32.0
+Release:        0.1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
@@ -372,6 +372,9 @@ ctest3 -V %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
+* Mon Oct 09 2023 Emanuele Di Giacomo <edigiacomo@arpae.it> - 2.32.0-0.1
+- Pre-release 2.32.0-0.1 waiting for EPEL release
+
 * Sat Sep 09 2023 Jos de Kloe <josdekloe@gmail.com> - 2.31.0-1
 - Upgrade to upstream version 2.31.0
 
