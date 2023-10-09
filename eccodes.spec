@@ -330,7 +330,9 @@ cd  %{_vpath_builddir}
 
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-ctest3 -V %{?_smp_mflags}
+ctest3 -v %{?_smp_mflags}
+# Remove the extra verbose option because it conflicts with moncic-ci
+# ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
