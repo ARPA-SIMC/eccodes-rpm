@@ -1,18 +1,14 @@
-# adapted from F37 sources
-
-%global releaseno 1
-
 Name:           eccodes
-Version:        2.25.0
-Release:        %{releaseno}SIMC%{?dist}
+Version:        2.31.0
+Release:        1%{?dist}
 Summary:        WMO data format decoding and encoding
 
 # force the shared libraries to have these so versions
 %global so_version       0.1
 %global so_version_f90   0.1
-%global datapack_date    20200626
+%global datapack_date    20220526
 
-# latest fedora-36 grib_api version is 1.27.0-12
+# latest fedora-38/rawhide grib_api version is 1.27.0-18
 # but this version number is to be updated as soon as we know
 # what the final release of grib_api by upstream will be.
 # latest upstream grib_api release is 1.28.0 (05-Dec-2018)
@@ -20,45 +16,44 @@ Summary:        WMO data format decoding and encoding
 # (Note that this page is no longer available, 17-Oct-2020)
 %global final_grib_api_version 1.28.1-1%{?dist}
 
-%ifarch i686 ppc64 s390x armv7hl
+%ifarch i686 ppc64 armv7hl
   %global obsolete_grib_api 0
 %else
   %global obsolete_grib_api 1
 %endif
 
 # license remarks:
-# Most of eccodes is licensed ASL 2.0 but a special case must be noted.
+# Most of eccodes is licensed ASL 2.0 (which is identical to the SPDX
+# identifier Apache-2.0) but a special case must be noted.
 # These 2 files:
 #     src/grib_yacc.c
 #     src/grib_yacc.h
 # contain a special exception clause that allows them to be
 # relicensed if they are included in a larger project
 
-License:        ASL 2.0
+License:        Apache-2.0
 
 URL:            https://confluence.ecmwf.int/display/ECC/ecCodes+Home
 Source0:        https://confluence.ecmwf.int/download/attachments/45757960/eccodes-%{version}-Source.tar.gz
-Source1:        https://get.ecmwf.int/repository/test-data/eccodes/eccodes_test_data.tar.gz
+
+# note: this data package is unversioned upstream but still it is updated
+# now and then so rename the datapack using the download date
+# to make it versioned in fedora
+Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
+
+# a custom script to create man pages
+Source2:        eccodes_create_man_pages.sh
+
 # Add soversion to the shared libraries, since upstream refuses to do so
-# https://software.ecmwf.int/issues/browse/SUP-1809
-Patch1:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-soversion.patch
+# https://jira.ecmwf.int/browse/SUP-1809
+Patch1:         eccodes-soversion.patch
 
 # note that the requests to make the other issues public are filed here:
-# https://software.ecmwf.int/issues/browse/SUP-2073
+# https://jira.ecmwf.int/browse/SUP-2073
 # (and again, unfortunately this issue is not public)
 
-# jasper3 now hides internal encoder / decoder. Use wrapper entry point
-# c.f. https://github.com/jasper-software/jasper/commit/5fe57ac5829ec31396e7eaab59a688da014660af
-# Also, now with jasper3, calling jas_stream_memopen (for example) always needs jasper
-# library initialization
-#Patch2:         eccodes-jasper3-use-wrapper-entry-point.patch
-# Disabled since this is needed only on recent fedora versions
-#Patch2:         https://raw.githubusercontent.com/ARPA-SIMC/eccodes-rpm/v%{version}-%{releaseno}/eccodes-jasper3-use-wrapper-entry-point.patch
-
-BuildRequires:  cmake >= 3.12
-# forcing libarchive update in CentOS 8 from simc/stable repo
-%{?el8:BuildRequires: libarchive >= 3.3.3}
-BuildRequires:  gcc
+BuildRequires:  cmake3
+BuildRequires:  gcc-c++
 BuildRequires:  gcc-gfortran
 BuildRequires:  /usr/bin/git
 BuildRequires:  jasper-devel
@@ -72,6 +67,9 @@ BuildRequires:  libaec-devel
 BuildRequires:  perl(Getopt::Long)
 BuildRequires:  perl(Test::More)
 BuildRequires:  perl(File::Compare)
+
+# For creation of man pages
+BuildRequires:  help2man
 
 # the data is needed by the library and all tools provided in the main package
 # the other way around, the data package could be installed without
@@ -103,8 +101,19 @@ Obsoletes:      grib_api < %{final_grib_api_version}
 
 # as explained in bugzilla #1562066
 ExcludeArch: i686
+# as explained in bugzilla #1562071
+#  note: this is no longer part of fc30/rawhide
+#  but the exclude is still needed for EPEL-7 and EPEL-8
+ExcludeArch: ppc64
+# as explained in bugzilla #1562076
+#ExcludeArch: s390x
 # as explained in bugzilla #1562084
-ExcludeArch: armv7hl
+#ExcludeArch: armv7hl
+
+%if 0%{?rhel} >= 7
+# as explained in bugzilla #1629377
+ExcludeArch: aarch64
+%endif
 
 %description
 ecCodes is a package developed by ECMWF which provides an application
@@ -188,18 +197,12 @@ pushd %{_vpath_builddir}
 tar xf %SOURCE1
 popd
 
-# remove executable permissions from c files
-chmod 644 tigge/*.c
-chmod 644 tools/*.c
-
-# remove executable permissions from the authors and license file
-chmod 644 AUTHORS LICENSE
-
 %build
+
+pushd %{_vpath_builddir}
 
 #-- The following features are disabled by default and not switched on:
 #
-# * AEC , support for Adaptive Entropy Coding
 # * MEMFS , Memory based access to definitions/samples
 # * MEMORY_MANAGEMENT , enable memory management
 # * ALIGN_MEMORY , enable memory alignment
@@ -236,15 +239,7 @@ chmod 644 AUTHORS LICENSE
 # when I try to build for armv7hl (other archs do not complain ......)
 # I have no idea what causes this difference in behaviour.
 
-%if 0%{?fedora} >= 34
-# we have working cmake3 macros
-%else
-pushd %{_vpath_builddir}
-%define cmake_path 1
-%endif
-
 %cmake3 -DINSTALL_LIB_DIR=%{_lib} \
-        -DCMAKE_INSTALL_MESSAGE=NEVER \
         -DENABLE_ECCODES_OMP_THREADS=ON \
         -DENABLE_EXTRA_TESTS=ON \
         -DENABLE_JPG=ON \
@@ -254,19 +249,14 @@ pushd %{_vpath_builddir}
         -DCMAKE_SKIP_INSTALL_RPATH=TRUE \
         -DECCODES_SOVERSION=%{so_version} \
         -DECCODES_SOVERSION_F90=%{so_version_f90} \
-        -DCMAKE_Fortran_FLAGS="-fPIC" %{?cmake_path:..} \
-        -DENABLE_PYTHON2=OFF
+        -DCMAKE_Fortran_FLAGS="-fPIC" \
+        -DENABLE_PYTHON2=OFF \
+	-DENABLE_AEC=ON \
+        ..
 
-# note the final '..' is no longer needed to the cmake3 call.
-# this is now hidden in the %%cmake3 macro
+%make_build
 
-%cmake_build
-
-%if 0%{?fedora} >= 34
-# we have working cmake3 macros
-%else
 popd
-%endif
 
 # copy some include files to the build dir
 # that are otherwise not found when creating the debugsource sub-package
@@ -274,20 +264,7 @@ cp fortran/eccodes_constants.h %{_vpath_builddir}/fortran/
 cp fortran/grib_api_constants.h %{_vpath_builddir}/fortran/
 
 %install
-%if 0%{?fedora} >= 34
-# we have working cmake3 macros
-%else
-pushd %{_vpath_builddir}
-%endif
-
-%cmake_install
-
-%if 0%{?fedora} >= 34
-# we have working cmake3 macros
-%else
-popd
-%endif
-
+%make_install -C %{_vpath_builddir}
 mkdir -p %{buildroot}%{_fmoddir}
 mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}/
 
@@ -300,8 +277,6 @@ rm %{buildroot}%{_datadir}/%{name}/definitions/installDefinitions.sh
 # copy the html documentation to the install directory
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/
 cp -r html %{buildroot}%{_datadir}/doc/%{name}/
-# and remove an unneeded Makefile from the html directory
-rm %{buildroot}%{_datadir}/doc/%{name}/html/Makefile.am
 
 # copy the example scripts/programs to the install directory
 # but dont copy the shell scripts and Makefiles, since these
@@ -314,6 +289,21 @@ mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/C
 cp examples/C/*.c %{buildroot}%{_datadir}/doc/%{name}/examples/C
 mkdir -p %{buildroot}%{_datadir}/doc/%{name}/examples/F90
 cp examples/F90/*.f90 %{buildroot}%{_datadir}/doc/%{name}/examples/F90
+
+# create man pages for the tools that support the --help option
+# since upstream does not provide them.
+# Source2 points to the script eccodes_create_man_pages.sh
+# used to generate the man pages.
+LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
+%{SOURCE2} %{_vpath_builddir}/bin \
+           %{_vpath_builddir}/man
+
+# copy the created man pages to the install directory
+mkdir -p %{buildroot}%{_datadir}/man/man1
+cp %{_vpath_builddir}/man/*.1 %{buildroot}%{_datadir}/man/man1
+
+# Fix permissions
+chmod 644 AUTHORS LICENSE
 
 # also not needed for x86_64
 # maybe they fixed it for all archs?
@@ -353,17 +343,14 @@ cd  %{_vpath_builddir}
 
 LD_LIBRARY_PATH=%{buildroot}/%{_libdir} \
 LIBRARY_PATH=%{buildroot}/%{_libdir} \
-%if 0%{?fedora} >= 34
-ctest3 %{?_smp_mflags}
-%else
-ctest %{?_smp_mflags}
-%endif
+ctest3 -V %{?_smp_mflags}
 
 %files
 %license LICENSE
 %doc README.md ChangeLog AUTHORS NEWS NOTICE
 %{_bindir}/*
 %{_libdir}/*.so.*
+%{_mandir}/man1/*.1*
 
 %files devel
 %{_includedir}/*
@@ -385,117 +372,25 @@ ctest %{?_smp_mflags}
 %doc %{_datadir}/doc/%{name}/
 
 %changelog
-* Sun Mar 06 2022 Jos de Kloe <josdekloe@gmail.com> - 2.25.0-1
-- Upgrade to upstream version 2.25.0
-- Add new BR libaec-devel
+* Sat Sep 09 2023 Jos de Kloe <josdekloe@gmail.com> - 2.31.0-1
+- Upgrade to upstream version 2.31.0
 
-* Mon Feb 14 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.24.0-4
-- jasper3: use wrapper entry point for jpeg2000 decoder
+* Thu May 18 2023 Jos de Kloe <josdekloe@gmail.com> - 2.30.0-1
+- Upgrade to upstream version 2.30.0
+- explicitly switch on ENABLE_AEC
+- migrated to SPDX license
 
-* Sun Feb 13 2022 Josef Ridky <jridky@redhat.com> - 2.24.0-3
-- Rebuilt for libjasper.so.6
+* Wed Jun 1 2022 Jos de Kloe <josdekloe@gmail.com> - 2.26.0-1
+- Upgrade to upstream version 2.26.0
 
-* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.24.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
-
-* Thu Dec 09 2021 Jos de Kloe <josdekloe@gmail.com> - 2.24.0-1
-- Upgrade to upstream version 2.24.0
-- Remove no longer needed patch2 (grib_to_netcdf test fix)
-
-* Wed Dec  1 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.23.0-2
-- Patch grib_api_internal.h for big endian test suite issue (upstream bug SUP-2410)
-
-* Thu Sep 02 2021 Jos de Kloe <josdekloe@gmail.com> - 2.23.0-1
+* Mon Oct 11 2021 Jos de Kloe <josdekloe@gmail.com> - 2.23.0-1
 - Upgrade to upstream version 2.23.0
-
-* Wed Aug 11 2021 Orion Poplawski <orion@nwra.com> - 2.22.1-4
-- Rebuild for netcdf 4.8.0
-
-* Tue Aug 10 2021 Orion Poplawski <orion@nwra.com> - 2.22.1-3
-- Rebuild for netcdf 4.8.0
-
-* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.22.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
-
-* Sat Jun 19 2021 Jos de Kloe <josdekloe@gmail.com> - 2.22.1-1
-- Upgrade to upstream version 2.22.1
-
-* Mon May 24 2021 Jos de Kloe <josdekloe@gmail.com> - 2.22.0-1
-- Upgrade to upstream version 2.22.0
-
-* Sun Mar 28 2021 Jos de Kloe <josdekloe@gmail.com> - 2.21.0-1
-- Upgrade to upstream version 2.21.0
-
-* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.20.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
-
-* Sat Jan 23 2021 Jos de Kloe <josdekloe@gmail.com> - 2.20.0-1
-- Upgrade to upstream version 2.20.0
-
-* Fri Nov 13 2020 Jos de Kloe <josdekloe@gmail.com> - 2.19.1-1
-- Upgrade to upstream version 2.19.1
-
-* Sat Oct 17 2020 Jos de Kloe <josdekloe@gmail.com> - 2.19.0-1
-- Upgrade to upstream version 2.19.0 and remove patch 1
-- Add -fpic to the fortran flags (needed for compiling on armv7hl)
-
-* Wed Aug 05 2020 Jos de Kloe <josdekloe@gmail.com> - 2.18.0-5
-- Adapt the spec file to use the new style cmake macros
-
-* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.18.0-4
-- Second attempt - Rebuilt for
-  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
-
-* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.18.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
-
-* Sat Jun 27 2020 Jos de Kloe <josdekloe@gmail.com> - 2.18.0-2
-- Rebuild after fixing mistake in ExcludeArch statements
 
 * Sat Jun 27 2020 Jos de Kloe <josdekloe@gmail.com> - 2.18.0-1
 - Upgrade to upstream version 2.18.0
 
-* Sun Mar 15 2020 Jos de Kloe <josdekloe@gmail.com> - 2.17.0-1
-- Upgrade to upstream version 2.17.0
-- Add explcit BR to perl(File::Compare) as needed by the tests now
-
-* Sat Feb 08 2020 Jos de Kloe <josdekloe@gmail.com> - 2.16.0-1
-- Upgrade to upstream version 2.16.0
-
-* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.15.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
-
-* Sun Dec 15 2019 Jos de Kloe <josdekloe@gmail.com> - 2.15.0-1
-- Upgrade to upstream version 2.15.0
-
 * Sun Oct 27 2019 Jos de Kloe <josdekloe@gmail.com> - 2.14.1-1
 - Upgrade to upstream version 2.14.1
-
-* Sat Aug 10 2019 Jos de Kloe <josdekloe@gmail.com> - 2.13.0-2
-- apply bugfix to pc files contribuited by Emanuele Di Giacomo
-
-* Thu Jul 25 2019 Jos de Kloe <josdekloe@gmail.com> - 2.13.0-1
-- Upgrade to upstream version 2.13.0
-
-* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.12.5-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
-
-* Thu May 09 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.5-1
-- Upgrade to upstream version 2.12.5
-
-* Mon Mar 18 2019 Orion Poplawski <orion@nwra.com> - 2.12.0-3
-- Rebuild for netcdf 4.6.3
-
-* Thu Feb 21 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-2
-- bump final_grib_api_version global variable to 1.27.1, so just above the
-  actual final version, to prevent the obsoletes to be disabled if the release
-  gets bumped. See BZ #1677968
-
-* Sun Feb 17 2019 Jos de Kloe <josdekloe@gmail.com> - 2.12.0-1
-- Upgrade to upstream version 2.12.0
-
-* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.2-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
 * Sat Nov 24 2018 Jos de Kloe <josdekloe@gmail.com> - 2.9.2-1
 - Upgrade to upstream version 2.9.2
