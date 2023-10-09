@@ -39,7 +39,7 @@ Source0:        https://confluence.ecmwf.int/download/attachments/45757960/eccod
 # note: this data package is unversioned upstream but still it is updated
 # now and then so rename the datapack using the download date
 # to make it versioned in fedora
-Source1:        http://download.ecmwf.org/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
+Source1:        https://get.ecmwf.int/repository/test-data/eccodes/eccodes_test_data.tar.gz#/eccodes_test_data_%{datapack_date}.tar.gz
 
 # a custom script to create man pages
 Source2:        eccodes_create_man_pages.sh
