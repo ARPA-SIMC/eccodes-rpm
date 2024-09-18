@@ -1,11 +1,6 @@
-[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/rocky8.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
-[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/rocky9.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
-[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/fedora36.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
-[![Build Status](https://simc.arpae.it/moncic-ci/eccodes-rpm/fedora38.png)](https://simc.arpae.it/moncic-ci/eccodes-rpm/)
-[![Build Status](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/simc/stable/package/eccodes/)
+**Note**: this repository is deprecated.
 
-
-This github repository is used to 
+This github repository was used for backporting newer versions of eccodes to fedora/epel
 
 # rpm packaging files for ecCodes
 
